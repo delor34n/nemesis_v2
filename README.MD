@@ -1,22 +1,19 @@
 <h1>Proyecto "Némesis" v2.0</h1>
-Sistema solar con cinturón de asteroides con enanas rojas.
+<br/>
+Representación del sistema solar con cinturón de asteroides con enanas rojas en OpenGL.
+<br/>
 <br/>
 <h3><i>¿Qué hay de nuevo?</i></h3>
-<br/>
 <ul style="list-style-type:square">
  <li>Se agrega textura curva que muestra las estrellas, constelaciones, nebulosas y galaxias presentes en el campo visible desde nuestro sistema solar.</li>
  <li>Nuevo menú el cual sirve para dirigirse a cualquier planeta, luna o sol del sistema solar a partir del punto actual.</li>
 </ul>
-<br/>
 <h3><i>Instrucciones como Ejecutar:</i></h3>
-<br/>
 <ol>
  <li>hacer doble clic a "Nemesis.sh"</li>
  <li>Esperar a que el programa se ejecute</li>
 </ol>
-<br/>
 <h3><i>Botones:</i></h3>
-<br/>
 <ol>
  <li><b>F2:</b> Activa el movimiento del sistema solar.</li>
  <li><b>F1:</b> Detiene el movimiento del sistema solar.</li>

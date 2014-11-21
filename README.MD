@@ -1,5 +1,4 @@
 <h1>Proyecto "Némesis" v2.0</h1>
-<br/>
 Sistema solar con cinturón de asteroides con enanas rojas.
 <br/>
 <h3><i>¿Qué hay de nuevo?</i></h3>

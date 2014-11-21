@@ -6,6 +6,10 @@
 //#include <mem.h>
 #include <math.h>
 #include <string.h>
+
+#define NUM_TEXTURAS 10
+#define MAX_TAM_ESFERA 10000
+
 GLfloat anos;
 GLint dia;
 GLint hora;
@@ -14,6 +18,7 @@ GLfloat z;
 GLfloat der;
 //GLfloat izq;
 GLfloat arr;
+
 int aux2=0;
 float mov;
 float mov2;
@@ -30,121 +35,124 @@ float a0=0,a1=0,a2=0,a3=0,a4=0,a5=0,a6=0,a7=0,a8=0,a9=0,a10=0,a11=0,a12=0,a13=0,
 float a[]={-17,-15.5, -13.4,-7.0,-2.0,0,2,7.0,13.0,15.3,17,-7,-2,0.1,2.1,7,13.1,15.4};
 float b[]={0, 2.0, 7.0, 13.4, 15.3, 17.0, 15.5, 13.4, 7.1, 2.1,0.1,-13,-15.3,-17,-15.5,-13.4,-7,-3};
 int d[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
 GLfloat mat_emision_explosion[] = {1, 0.0, 0.0, 1.0};
 GLint i;
-#define NUM_TEXTURAS 10
-#define MAX_TAM_ESFERA 10000
+
 static int slices=16;
 static int stacks= 16;
-// definiciones de struct
 
+// definiciones de struct
 typedef struct config_tag {
     short int SCREEN_SIZE_X;
     short int SCREEN_SIZE_Y;
     char FULLSCREEN;
 } configuracion;
 
-typedef	struct										// Utilizamos esta estructura
-{
-	GLubyte	*imageData;
-	GLuint	bpp;
-	GLuint	width;
-	GLuint	height;
-	GLuint	texID;
+// Utilizamos esta estructura
+typedef	struct {
+    GLubyte	*imageData;
+    GLuint	bpp;
+    GLuint	width;
+    GLuint	height;
+    GLuint	texID;
 } Imagen;
 
 typedef struct Point {
   double x;
   double y;
   double z;
-}point;
+} point;
 
 // variables globales
 
-char *textura_datos[NUM_TEXTURAS];				/* Aquí almacenaremos las texturas */
-GLuint textura[NUM_TEXTURAS];						/* Aquí llevaremos el número de texturas*/
-configuracion config;					/* Variable para almacenar la configuración */
+char *textura_datos[NUM_TEXTURAS];  /* Aquí almacenaremos las texturas */
+GLuint textura[NUM_TEXTURAS];       /* Aquí llevaremos el número de texturas*/
+configuracion config;               /* Variable para almacenar la configuración */
 char resultado_carga_tga[100];
 
 
 // funciones
 
-void *CargaTGA(char *filename,int *tam)
-{
-	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};
-	GLubyte		TGAcompare[12];
-	GLubyte		header[6];
-	GLuint		bytesPerPixel;
-	GLuint		imageSize;
-	GLuint		temp,i;
-	GLuint		type=GL_RGBA;
-    Imagen		texture;
-	GLubyte		*aux;
-	FILE *file = fopen(filename, "rb");
-	if (file == NULL)
-	{
-	    strcpy(resultado_carga_tga, "archivo");
-        return NULL;
-	}
-	/* Esto abre y comprueba que es un TGA */
-	fread(TGAcompare,1,sizeof(TGAcompare),file);
-	if (memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0)
-	{
-	    strcpy(resultado_carga_tga, "memcmp");
-        return NULL;
-	}
-    /* Leemos la cabecera*/
-	fread(header,1,sizeof(header),file);
-	/* Determinamos el tamaño */
-	texture.width  = header[1] * 256 + header[0];
-	texture.height = header[3] * 256 + header[2];
-	// Vemos las características y comprobamos si son correctas
- 	if(	texture.width	<=0	||
-		texture.height	<=0	||
-		texture.width >256 ||
-		texture.height !=texture.width ||
-		( header[4]!=32))
-	{
-		fclose(file);
-		strcpy(resultado_carga_tga, "tamagno");
-		return NULL;
-	}
-	/* Calculamos la memoria que será necesaria */
-	texture.bpp	= header[4];
-	bytesPerPixel	= texture.bpp/8;
-	imageSize	= texture.width*texture.height*bytesPerPixel;
-	/* Reservamos memoria */
-	texture.imageData=(GLubyte *)malloc(imageSize);
-	//sprintf(resultado_carga_tga, "%d", imageSize);
-	/* Cargamos y hacemos alguna comprobaciones */
-	if(	texture.imageData==NULL ||
-		fread(texture.imageData, 1, imageSize, file)!=imageSize)
-	{
-		if(texture.imageData!=NULL)
-			free(texture.imageData);
-		fclose(file);
-        strcpy(resultado_carga_tga, "imagedata");
-		return NULL;
-	}
+void *CargaTGA(char *filename,int *tam) {
+    GLubyte TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};
+    GLubyte TGAcompare[12];
+    GLubyte header[6];
+    GLuint  bytesPerPixel;
+    GLuint  imageSize;
+    GLuint  temp,i;
+    GLuint  type=GL_RGBA;
+    Imagen  texture;
+    GLubyte *aux;
 
-    /* El TGA viene en formato BGR, lo pasamos a RGB */
-	for(i=0; i<(GLuint)(imageSize); i+=bytesPerPixel)
-	{
-		temp=texture.imageData[i];
-		texture.imageData[i] = texture.imageData[i + 2];
-		texture.imageData[i + 2] = temp;
-	}
-	fclose (file);
-	/* Ahora, cambiamos el orden de las líneas, como si hiciesemos
-	un flip vertical. */
-	aux=(GLubyte *)malloc(imageSize);
-	for(i=0; i<texture.height; i++)
-			memcpy(&aux[imageSize-((i+1)*texture.width*4)],&texture.imageData[i*texture.width*4],texture.width*4);
-	/* tam devolverá el tamaño */
-	*tam=texture.width;
-	/* Liberamos memoria */
-	free(texture.imageData);
-	return aux;
+    FILE *file = fopen(filename, "rb");
+    if (file == NULL) {
+        strcpy(resultado_carga_tga, "archivo");
+        return NULL;
+    }
+
+    /* Esto abre y comprueba que es un TGA */
+    fread(TGAcompare,1,sizeof(TGAcompare),file);
+    if (memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0) {
+        strcpy(resultado_carga_tga, "memcmp");
+        return NULL;
+    }
+    
+    /* Leemos la cabecera*/
+    fread(header,1,sizeof(header),file);
+    
+    /* Determinamos el tamaño */
+    texture.width  = header[1] * 256 + header[0];
+    texture.height = header[3] * 256 + header[2];
+    
+    // Vemos las características y comprobamos si son correctas
+    if(	texture.width	<=0	||
+        texture.height	<=0	||
+        texture.width >256      ||
+        texture.height !=texture.width || ( header[4]!=32)) {
+            fclose(file);
+            strcpy(resultado_carga_tga, "tamagno");
+            return NULL;
+    }
+
+    /* Calculamos la memoria que será necesaria */
+    texture.bpp	= header[4];
+    bytesPerPixel	= texture.bpp/8;
+    imageSize	= texture.width*texture.height*bytesPerPixel;
+
+    /* Reservamos memoria */
+    texture.imageData=(GLubyte *)malloc(imageSize);
+    //sprintf(resultado_carga_tga, "%d", imageSize);
+
+    /* Cargamos y hacemos alguna comprobaciones */
+    if(	texture.imageData==NULL ||
+        fread(texture.imageData, 1, imageSize, file)!=imageSize)
+    {
+            if(texture.imageData!=NULL)
+                    free(texture.imageData);
+            fclose(file);
+    strcpy(resultado_carga_tga, "imagedata");
+            return NULL;
+    }
+
+/* El TGA viene en formato BGR, lo pasamos a RGB */
+    for(i=0; i<(GLuint)(imageSize); i+=bytesPerPixel)
+    {
+            temp=texture.imageData[i];
+            texture.imageData[i] = texture.imageData[i + 2];
+            texture.imageData[i + 2] = temp;
+    }
+    fclose (file);
+    /* Ahora, cambiamos el orden de las líneas, como si hiciesemos
+    un flip vertical. */
+    aux=(GLubyte *)malloc(imageSize);
+    for(i=0; i<texture.height; i++)
+                    memcpy(&aux[imageSize-((i+1)*texture.width*4)],&texture.imageData[i*texture.width*4],texture.width*4);
+    /* tam devolverá el tamaño */
+    *tam=texture.width;
+    /* Liberamos memoria */
+    free(texture.imageData);
+    return aux;
 }
 
 int carga_texturas() {
@@ -155,7 +163,7 @@ int carga_texturas() {
 
     for(i = 0; i < NUM_TEXTURAS; i++)
     {
-        sprintf(nombre_archivo,"textura%d.tga", i);
+        sprintf(nombre_archivo,"img/textura%d.tga", i);
         textura_datos[i]=(char *)CargaTGA(nombre_archivo,&tam[i]);
         if (textura_datos[i] == NULL)
         {

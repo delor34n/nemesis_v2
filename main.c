@@ -757,22 +757,20 @@ int main(int argc, char** argv) {
     glutInitWindowSize( 1020, 850 );  //Tamaño de la Ventana Creada
     glutInitWindowPosition( 100, 100 );
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutCreateWindow( "Nemesis" );
+    glutCreateWindow( "Nemesis v2.0" );
     glEnable(GL_SMOOTH);
     // inicialización de los datos del programa
-    anos  = 0;
+    anos = 0;
     dia  = 0;
     hora = 0;
-    min = 0;
-    z = -35;
-    der=0;
-    explo=0;
-    mov=0;
-    mov2=0.01;
-    mov3=0;
-    //izq=0;
-    arr=5;
-    //i=5;
+    min  = 0;
+    z    = -35;
+    der  = 0;
+    explo= 0;
+    mov  = 0;
+    mov2 = 0.01;
+    mov3 = 0;
+    arr  = 5;
     // registro de los eventos
     glutReshapeFunc (reshapeevent);
     glutDisplayFunc( displayevent );

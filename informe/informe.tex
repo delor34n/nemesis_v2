@@ -1,0 +1,70 @@
+\documentclass[journal]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\ifCLASSINFOpdf
+\else
+\fi
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\usepackage{graphicx}
+\usepackage[justification=centering]{caption}
+
+\begin{document}
+\title{Reconocimiento de dedos de la mano para la interacción con un ordenador utilizando redes neuronales}
+
+\author{Sebastián Lastra Mena \\ Departamento de Matemáticas y Ciencia de la Computación \\ Universidad de Santiago de Chile - Avenida Libertador General Bernardo O'Higgins \#3363 \\ \{sebastian.lastra\}@ usach.cl 
+}
+
+\markboth{PROYECTO DE INVESTIGACIÓN - CURSO DE INTELIGENCIA ARTIFICIAL, Semestre II - Año 2013}
+{Shell \MakeLowercase{\textit{et al.}}}
+
+\maketitle
+
+
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introducción}
+
+	A medida que avanzan las tecnologías, se ha hecho presente el desarrollo de aplicaciones con interfaces intuitivas que permiten a un usuario sin conocimientos en la computación interactuar con software complejos, dejando cada vez más de lado el teclado y potenciando la utilización del cuerpo como la herramienta de control. Es justamente a esto a lo que se orienta este software.
+
+	Actualmente existen muchos métodos y herramientas para el reconocimiento de partes del cuerpo, un ejemplo de esto es la Kinect de Microsoft, la cual cuenta incluso con un proyecto de código abierto (OpenKinect). Esta herramienta permite a los usuarios controlar e interactuar con la consola Xbox360 sin necesidad de tener contacto físico con un control de videojuegos tradicional, mediante una interfaz natural de usuario que reconoce gestos, comandos de voz, y objetos e imágenes. Si bien el desarrollo en la API OpenKinect es muy avanzado (lo que permite incluso poder trabajar desde un ordenador y desarrollar aplicaciones), el precio aún es muy elevado y no aprovecharíamos el hardware incorporado en la mayoría de los laptops.
+	
+	La utilización de redes neuronales nos permite reconocer cada patrón que necesitamos.
+
+\section{Modelo lógico}
+\begin{itemize}
+	\item Obtener capturas de las manos.
+	\item Reconocer la mano, tanto la parte frontal como la trasera.
+	\item Reconocer qué dedos de la mano se muestran.
+	\item Asociar la acción que se ejecutará.
+	\item Ejecutar la acción.
+\end{itemize}
+
+\section{Implementación}
+
+En primera instancia se pensó en utilizar la detección de bordes con Sobel para identificar la mano dentro de la imagen obtenido mediante la cámara digital, pero resultó complejo poder aislar efectivamente el fondo de lo que se necesitaba, esto sin considerar el ruido normal que se puede producir en la imagen.
+
+Tras consultar en varias ocasiones se tomó la determinación de utilizar guantes con líneas rojas(parte frontal de la mano) y verdes(parte trasera de la mano). Esto facilita la detección de las manos y un posterior analisis de lo realmente importante para este software: los dedos de cada mano. Además de lo anterior es necesario contar con un fondo blanco al momento de obtener la imagen.
+
+Luego se realizó la captura de imagenes señalando con los dedos:
+
+
+Se realizó la detección de los colores de la mano y se separó de todo lo que no fuera rojo o verde. Junto con esto, se respresentó la cantidad de rojo presente en cada imagen a través del histograma (Fig 4) analizando cantidad de pixeles vs cantidad de pixeles rojos.
+
+	
+La implementación del software se realizó dentro de una interfaz gráfica en el programa Matlab2012a, el cual contempla la captura de la imagen junto a un cuadro mostrando el resultado obtenido (Fig 5).
+
+
+\section{Análisis de resultados}
+\subsection{Problemas detectados}
+	El principal problema que se detectó fue el poder identificar la mano dentro de un fondo cualquiera. Para esto se trabajó en los dos aspectos descritos anteriormente:
+	\begin{itemize}
+		\item Trabajar con un fondo blanco
+		\item Utilizar un guante con líneas de dos colores (rojo y verde) las cuales serán nuestros dedos.
+	\end{itemize}
+\subsection{Alcances de la implementación}
+	El software sólo es posible hacerlo funcionar considerando un fondo blanco y utilizando el guante anteriormente señalado.
+	
+\end{document}

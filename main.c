@@ -647,7 +647,46 @@ void animacion() {
     }
     // redibuja la escena
     glutPostRedisplay();
-}	
+}
+
+static int window;
+static int menu_id;
+static int solarSytem_submenu_id;
+static int planets_submenu_id;
+static int value = 0;
+
+void menu(int num){
+    if(num == 0){
+        glutDestroyWindow(window);
+        exit(0);
+    } else {
+        value = num;
+    }
+    glutPostRedisplay();
+}
+void createMenu(void){
+    //submenú del sistema solar
+    solarSytem_submenu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Iniciar Movimiento", 3);
+    glutAddMenuEntry("Detener Movimiento", 4);
+    planets_submenu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Sol", 6);
+    glutAddMenuEntry("Mercurio", 7);
+    glutAddMenuEntry("Venus", 8);
+    glutAddMenuEntry("Tierra", 9);
+    glutAddMenuEntry("Marte", 10);
+    glutAddMenuEntry("Jupiter", 11);
+    glutAddMenuEntry("Saturno", 12);
+    glutAddMenuEntry("Urano", 13);
+    glutAddMenuEntry("Neptuno", 14);
+    menu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Go Nemesis!", 1);
+    glutAddSubMenu("Sistema Solar", solarSytem_submenu_id);
+    glutAddSubMenu("Ir a", planets_submenu_id);
+    glutAddMenuEntry("Acerca de", 15);
+    glutAddMenuEntry("Salir", 16);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+} 
 
 void displayevent(void) {
     // limpia la escena (ventana)
@@ -656,8 +695,6 @@ void displayevent(void) {
     glLoadIdentity();
     // verfica superficies visibles
     glEnable( GL_DEPTH_TEST );
-    // traslada la escena al centro del espacio (Hortiz y Vert: 0,0)
-    //glTranslatef( der, arr, z );
     // rota la escena
     gluLookAt(der,arr,z, 0.0,0.0,0.0, 0.0,1.0,0.0);
     glEnable(GL_LIGHTING);
@@ -673,17 +710,7 @@ void displayevent(void) {
     jupiter(8.4,0.0,-2);
     saturno(-11.6,0.0,0);
     urano(14,0.0,0);
-    neptuno(-16,0.0,0);
-    
-    //asteroides
-    /*
-    float x=-13.4;
-    float z=-7.0;
-    float z3=0;
-    if(sqrt((x-getXnemesis())*(x-getXnemesis())+(z-getZnemesis())*(z-getZnemesis()))<30) {	
-        x3=x3+0.01;
-        z3=((getZnemesis()-z)*(x3-x)/(getXnemesis()-x))+z;
-    }*/
+    neptuno(-16,0.0,0);    
 
     meteoro(a[0]+a0,0,b[0]); //1
     meteoro (a[1]+a1, 0, b[1]);
@@ -705,6 +732,55 @@ void displayevent(void) {
     meteoro(a[15]+a15, 0, b[15]);
     meteoro(a[16]+a16, 0, b[16]);
     meteoro(a[17]+a17, 0,b[17]); 
+    
+    switch (value){
+        case 1:
+            printf("Nemesis action\n");
+            aux2= 1;
+            break;
+        case 3:
+            printf("Iniciar Movimiento\n");
+            hora += 50.0;
+            break;
+        case 4:
+            printf("Detener Movimiento\n");
+            hora  = 0.0;
+            break;
+        case 6:
+            printf("Sol\n");
+            break;
+        case 7:
+            printf("Mercurio\n");
+            break;
+        case 8:
+            printf("Venus\n");
+            break;
+        case 9:
+            printf("Tierra\n");
+            break;
+        case 10:
+            printf("Marte\n");
+            break;
+        case 11:
+            printf("Jupiter\n");
+            break;
+        case 12:
+            printf("Saturno\n");
+            break;
+        case 13:
+            printf("Urano\n");
+            break;
+        case 14:
+            printf("Neptuno\n");
+            break;
+        case 15:
+            printf("Acerca de\n");
+            break;
+        case 16:
+            printf("Salir\n");
+            exit(1);
+            break;
+    }
 
     glutSwapBuffers();
 }
@@ -715,11 +791,11 @@ void specialkeyevent( int key, int Xx, int Yy ) {
         // cambia la z para la traslación de la esfera
         case GLUT_KEY_UP:    z += 0.1; break;
         case GLUT_KEY_DOWN:  z -= 0.1; break;
+        case GLUT_KEY_LEFT:  der += 0.05; break;
+        case GLUT_KEY_RIGHT: der -= 0.05; break;
         // cambia el delta del angulo de rotación
         case GLUT_KEY_F1:    hora  = 0.0; break;
         case GLUT_KEY_F2:    hora += 50.0; break;
-        case GLUT_KEY_LEFT:  der += 0.05; break;
-        case GLUT_KEY_RIGHT: der -= 0.05; break;
         case GLUT_KEY_F3:    arr -= 0.05; break;
         case GLUT_KEY_F4:    arr += 0.05; break;
         case GLUT_KEY_F5:    arr = 0.00; break;
@@ -771,10 +847,13 @@ int main(int argc, char** argv) {
     mov2 = 0.01;
     mov3 = 0;
     arr  = 5;
+    
+    createMenu();
+    
     // registro de los eventos
     glutReshapeFunc (reshapeevent);
     glutDisplayFunc( displayevent );
-    //glutDisplayFunc( displayevent2 );
+    //Cambio de teclas por menú.
     glutSpecialFunc( specialkeyevent );
     glutIdleFunc( animacion );
     aux = carga_texturas();

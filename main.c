@@ -11,6 +11,7 @@
 //#include <mem.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 /*************************
  *                       *
@@ -107,6 +108,21 @@ float getZnemesis(){return(posicionZnemesis);}
 int sw=10;
 
 float x3=-13.4;
+
+static int window;
+static int menu_id;
+static int solarSytem_submenu_id;
+static int planets_submenu_id;
+static int value = 0;
+
+GLfloat mercurio_matrix[16];
+GLfloat venus_matrix[16];
+GLfloat tierra_matrix[16];
+GLfloat marte_matrix[16];
+GLfloat jupiter_matrix[16];
+GLfloat saturno_matrix[16];
+GLfloat urano_matrix[16];
+GLfloat neptuno_matrix[16];
 
 /***********************
  *                     *
@@ -400,13 +416,9 @@ void sol(float x, float y, float z) {
     glLightfv (GL_LIGHT0, GL_POSITION, light_position);
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    /*glMaterialfv (GL_FRONT, GL_SPECULAR, mat_specular_sol);
-    glMaterialfv (GL_FRONT, GL_AMBIENT, mat_ambient_sol);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
+    
     glTranslatef (x, y, z); 
-    render_esfera(4.0, 100, 32 , 0);   
-    //glutSolidSphere (1.0, 100, 100);
-    //glutSolidSphere (4, 100, 100);
+    render_esfera(4.0, 100, 32 , 0);
     glPopMatrix ();
 }
 
@@ -552,17 +564,18 @@ void saturno (float x, float y, float z){
     else
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision_explosion);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    /*glMaterialfv (GL_FRONT, GL_SPECULAR, mat_specular_saturno);
-    glMaterialfv (GL_FRONT, GL_AMBIENT, mat_ambient_saturno);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
+    
     anos = ((float) dia / 365)*360;
-    glRotatef(90,1,0,0);
-    glRotatef(-anos/29, 0,0,1 );
-    glTranslatef (x, y,z); 
-    render_esfera(0.805, 100, 32 , 6);    
-    //glutSolidSphere (0.805, 100, 100);
+    //Rotación 90°: Los ejes pasan de estar x-y-z => x-z-y.
+    //Se aplica la rotación a ambos objetos, cambiando el eje en torno al cual 
+    //gira el planeta (Primero en torno al eje Y, ahora en torno al eje Z).
+    glRotatef(90, 1, 0, 0);
+    glRotatef(-anos/29, 0, 0, 1);   
+    glTranslatef (x, y, z);
+    render_esfera(0.805, 100, 32 ,6);
     glScalef(1, 1, 0.05);
     glutSolidTorus(0.3, 1.5, 32 , 32);
+    glGetFloatv(GL_MODELVIEW_MATRIX, saturno_matrix);
     glPopMatrix ();
 }
 
@@ -582,6 +595,7 @@ void urano (float x, float y, float z){
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef(anos/84, 0,1,0 );
+    
     glTranslatef (x, y, z); 
     render_esfera(0.342, 100, 32 , 7);    
     //glutSolidSphere (0.342, 100, 100);
@@ -605,11 +619,165 @@ void neptuno (float x, float y, float z){
     anos = ((float) dia / 365)*360;
     glRotatef( anos/164, 0,1,0 );
     glTranslatef (x, y, z); 
-    render_esfera(0.328, 100, 32 , 8);   
-    //glutSolidSphere (0.328, 100, 100);
+    render_esfera(0.328, 100, 32 , 8);
     glPopMatrix ();
 }
 //Fin funciones planetas
+
+void getXYZ (int planeta){
+    
+    switch (planeta){
+        //Mercurio
+        case 1:
+            break;
+        //Venus
+        case 2:
+            break;
+        //Tierra
+        case 3:
+            break;
+        //Marte
+        case 4:
+            break;
+        //Jupiter
+        case 5:
+            break;
+        //Saturno
+        case 6:
+            der = saturno_matrix[12];
+            arr = saturno_matrix[13];
+            z = saturno_matrix[14];
+            printf ( "x >> %F , y >> %F , z >> %F \n", saturno_matrix[12], saturno_matrix[13], saturno_matrix[14]);
+            break;
+        //Urano
+        case 7:
+            break;
+        //Neptuno
+        case 8:
+            break;
+    }
+
+}
+
+void walkFromTO ( float fromX, float fromY, float fromZ, float toX, float toY, float toZ ) {
+
+}
+
+void menuChoise ( ){
+    switch (value){
+        case 0:
+            //set camera position
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            break;
+        case 1:
+            printf("Nemesis action\n");
+            aux2= 1;
+            break;
+        case 3:
+            printf("Iniciar Movimiento \n" );
+            hora += 50.0;
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            break;
+        case 4:
+            printf("Detener Movimiento\n");
+            hora  = 0.0;
+            break;
+        case 6:
+            printf("Sol\n");
+            walkFromTO (0.0, 0.0, -7.6, 0, 0, 1);
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            break;
+        case 7:
+            printf("Mercurio\n");
+            break;
+        case 8:
+            printf("Venus\n");
+            break;
+        case 9:
+            printf("Tierra\n");
+            break;
+        case 10:
+            printf("Marte\n");
+            break;
+        case 11:
+            printf("Jupiter\n");
+            break;
+        case 12:
+            printf("Saturno\n");
+            //getXYZ (6=='Saturno');
+            getXYZ (6);
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);{
+                glRotatef( -(((float) dia / 365)*360)/29, 0, 1.0f, 0 );
+            }
+            break;
+        case 13:
+            printf("Urano\n");
+            break;
+        case 14:
+            printf("Neptuno\n");
+            break;
+        case 15:
+            printf("Acerca de\n");
+            break;
+        case 16:
+            printf("Fullscreen\n");
+            glutFullScreen();
+            break;
+        case 17:
+            printf("Salir\n");
+            exit(1);
+            break;
+    }
+}
+
+void displayevent(void) {
+    // limpia la escena (ventana)
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+     // inicializa la Matriz de transformación de coordenadas (Matriz del Modelo)
+    glLoadIdentity();
+    // verfica superficies visibles
+    glEnable( GL_DEPTH_TEST );
+    
+    menuChoise ( );
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    
+    //Dibujamos los planetas
+    sol(0.0,0.0,1);
+    nemesis(0,0,-30);
+    mercurio(2,0.0,2);
+    venus(3,0.0,2);
+    tierra(5,0.0,0.0);
+    marte(6,0.0,0);
+    jupiter(8.4,0.0,-2);
+    saturno(-11.6,0.0,0);
+    urano(14,0.0,0);
+    neptuno(-16,0.0,0);    
+
+    meteoro(a[0]+a0,0,b[0]); //1
+    meteoro (a[1]+a1, 0, b[1]);
+    meteoro(a[2]+a2, 0, b[2]); 
+    meteoro(a[3]+a3, 0, b[3]); 
+    meteoro(a[4]+a4, 0, b[4]); 
+    meteoro(a[5]+a5, 0, b[5]);  //2
+    meteoro(a[6]+a6, 0, b[6]);
+    meteoro(a[7]+a7, 0, b[7]);
+    meteoro(a[8]+a8, 0, b[8]);
+    meteoro(a[9]+a9, 0, b[9]);
+    meteoro(a[10]+a10,0,b[10]); //1*/
+
+    //meteoro(x3, 0, z3); 
+    meteoro(a[11]+a11, 0, b[11]); 
+    meteoro(a[12]+a12, 0, b[12]); 
+    meteoro (a[13]+a13, 0, b[13]);  //2
+    meteoro(a[14]+a14, 0, b[14]);
+    meteoro(a[15]+a15, 0, b[15]);
+    meteoro(a[16]+a16, 0, b[16]);
+    meteoro(a[17]+a17, 0,b[17]); 
+
+    glutSwapBuffers();
+}
 
 void animacion() {
     // cambia el angulo de rotación constantemente (animación)
@@ -618,6 +786,7 @@ void animacion() {
         if(dia>364)
             anos++;
     }
+          
     // movimiento de la estrella nemesis
     if(hora>23)
         mov += mov2;
@@ -649,12 +818,6 @@ void animacion() {
     glutPostRedisplay();
 }
 
-static int window;
-static int menu_id;
-static int solarSytem_submenu_id;
-static int planets_submenu_id;
-static int value = 0;
-
 void menu(int num){
     if(num == 0){
         glutDestroyWindow(window);
@@ -664,6 +827,7 @@ void menu(int num){
     }
     glutPostRedisplay();
 }
+
 void createMenu(void){
     //submenú del sistema solar
     solarSytem_submenu_id = glutCreateMenu(menu);
@@ -684,115 +848,19 @@ void createMenu(void){
     glutAddSubMenu("Sistema Solar", solarSytem_submenu_id);
     glutAddSubMenu("Ir a", planets_submenu_id);
     glutAddMenuEntry("Acerca de", 15);
-    glutAddMenuEntry("Salir", 16);
+    glutAddMenuEntry("FullScreen", 16);
+    glutAddMenuEntry("Salir", 17);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
-} 
-
-void displayevent(void) {
-    // limpia la escena (ventana)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     // inicializa la Matriz de transformación de coordenadas (Matriz del Modelo)
-    glLoadIdentity();
-    // verfica superficies visibles
-    glEnable( GL_DEPTH_TEST );
-    // rota la escena
-    gluLookAt(der,arr,z, 0.0,0.0,0.0, 0.0,1.0,0.0);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    
-    //Dibujamos los planetas
-    sol(0.0,0.0,0);
-    nemesis(0,0,-30);
-    mercurio(2,0.0,2);
-    venus(3,0.0,2);
-    tierra(5,0.0,0.0);
-    marte(6,0.0,0);
-    jupiter(8.4,0.0,-2);
-    saturno(-11.6,0.0,0);
-    urano(14,0.0,0);
-    neptuno(-16,0.0,0);    
-
-    meteoro(a[0]+a0,0,b[0]); //1
-    meteoro (a[1]+a1, 0, b[1]);
-    meteoro(a[2]+a2, 0, b[2]); 
-    meteoro(a[3]+a3, 0, b[3]); 
-    meteoro(a[4]+a4, 0, b[4]); 
-    meteoro(a[5]+a5, 0, b[5]);  //2
-    meteoro(a[6]+a6, 0, b[6]);
-    meteoro(a[7]+a7, 0, b[7]);
-    meteoro(a[8]+a8, 0, b[8]);
-    meteoro(a[9]+a9, 0, b[9]);
-    meteoro(a[10]+a10,0,b[10]); //1*/
-
-    //meteoro(x3, 0, z3); 
-    meteoro(a[11]+a11, 0, b[11]); 
-    meteoro(a[12]+a12, 0, b[12]); 
-    meteoro (a[13]+a13, 0, b[13]);  //2
-    meteoro(a[14]+a14, 0, b[14]);
-    meteoro(a[15]+a15, 0, b[15]);
-    meteoro(a[16]+a16, 0, b[16]);
-    meteoro(a[17]+a17, 0,b[17]); 
-    
-    switch (value){
-        case 1:
-            printf("Nemesis action\n");
-            aux2= 1;
-            break;
-        case 3:
-            printf("Iniciar Movimiento\n");
-            hora += 50.0;
-            break;
-        case 4:
-            printf("Detener Movimiento\n");
-            hora  = 0.0;
-            break;
-        case 6:
-            printf("Sol\n");
-            break;
-        case 7:
-            printf("Mercurio\n");
-            break;
-        case 8:
-            printf("Venus\n");
-            break;
-        case 9:
-            printf("Tierra\n");
-            break;
-        case 10:
-            printf("Marte\n");
-            break;
-        case 11:
-            printf("Jupiter\n");
-            break;
-        case 12:
-            printf("Saturno\n");
-            break;
-        case 13:
-            printf("Urano\n");
-            break;
-        case 14:
-            printf("Neptuno\n");
-            break;
-        case 15:
-            printf("Acerca de\n");
-            break;
-        case 16:
-            printf("Salir\n");
-            exit(1);
-            break;
-    }
-
-    glutSwapBuffers();
 }
-	
+
 void specialkeyevent( int key, int Xx, int Yy ) {
     // manejo de teclas especiales
     switch ( key ) {
         // cambia la z para la traslación de la esfera
-        case GLUT_KEY_UP:    z += 0.1; break;
-        case GLUT_KEY_DOWN:  z -= 0.1; break;
-        case GLUT_KEY_LEFT:  der += 0.05; break;
-        case GLUT_KEY_RIGHT: der -= 0.05; break;
+        case GLUT_KEY_UP:    z += 1.1; break;
+        case GLUT_KEY_DOWN:  z -= 1.1; break;
+        case GLUT_KEY_LEFT:  der += 1.05; break;
+        case GLUT_KEY_RIGHT: der -= 1.05; break;
         // cambia el delta del angulo de rotación
         case GLUT_KEY_F1:    hora  = 0.0; break;
         case GLUT_KEY_F2:    hora += 50.0; break;
@@ -847,6 +915,7 @@ int main(int argc, char** argv) {
     mov2 = 0.01;
     mov3 = 0;
     arr  = 5;
+    value = 0;
     
     createMenu();
     

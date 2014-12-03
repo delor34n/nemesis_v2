@@ -542,14 +542,11 @@ void jupiter (float x, float y, float z){
     else
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision_explosion);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    /*glMaterialfv (GL_FRONT, GL_SPECULAR, mat_specular_jupiter);
-    glMaterialfv (GL_FRONT, GL_AMBIENT, mat_ambient_jupiter);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef( anos/11, 0,1,0 );
     glTranslatef (x, y, z); 
-    render_esfera(0.959, 100, 32 , 5);    
-    //glutSolidSphere (0.959, 100, 100);
+    render_esfera(0.959, 100, 32 , 5);
+    glGetFloatv(GL_MODELVIEW_MATRIX,jupiter_matrix);
     glPopMatrix ();
 }
 
@@ -590,15 +587,10 @@ void urano (float x, float y, float z){
     else
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision_explosion);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    /*glMaterialfv (GL_FRONT, GL_SPECULAR, mat_specular_urano);
-    glMaterialfv (GL_FRONT, GL_AMBIENT, mat_ambient_urano);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef(anos/84, 0,1,0 );
-    
     glTranslatef (x, y, z); 
-    render_esfera(0.342, 100, 32 , 7);    
-    //glutSolidSphere (0.342, 100, 100);
+    render_esfera(0.342, 100, 32 , 7);
     glPopMatrix ();
 }
 
@@ -613,9 +605,6 @@ void neptuno (float x, float y, float z){
     else
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision_explosion);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    /*glMaterialfv (GL_FRONT, GL_SPECULAR, mat_specular_neptuno);
-    glMaterialfv (GL_FRONT, GL_AMBIENT, mat_ambient_neptuno);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef( anos/164, 0,1,0 );
     glTranslatef (x, y, z); 
@@ -624,43 +613,16 @@ void neptuno (float x, float y, float z){
 }
 //Fin funciones planetas
 
-void getXYZ (int planeta){
-    
-    switch (planeta){
-        //Mercurio
-        case 1:
-            break;
-        //Venus
-        case 2:
-            break;
-        //Tierra
-        case 3:
-            break;
-        //Marte
-        case 4:
-            break;
-        //Jupiter
-        case 5:
-            break;
-        //Saturno
-        case 6:
-            der = saturno_matrix[12];
-            arr = saturno_matrix[13];
-            z = saturno_matrix[14];
-            printf ( "x >> %F , y >> %F , z >> %F \n", saturno_matrix[12], saturno_matrix[13], saturno_matrix[14]);
-            break;
-        //Urano
-        case 7:
-            break;
-        //Neptuno
-        case 8:
-            break;
-    }
-
-}
-
 void walkFromTO ( float fromX, float fromY, float fromZ, float toX, float toY, float toZ ) {
 
+    float newDistanceX =  sqrt(toX*toX + der*der)/100;
+    float newDistanceZ =  sqrt(toZ*toZ + z*z)/100;    
+    printf ( "FROM: x >> %F , y >> %F , z >> %F \n", fromX, fromY, fromZ);
+    printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
+    der = fromX + newDistanceX;
+    z = fromZ + newDistanceZ; 
+    printf ( "FROM: x >> %F , y >> %F , z >> %F \n", fromX, fromY, fromZ);
+    printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
 }
 
 void menuChoise ( ){
@@ -684,7 +646,7 @@ void menuChoise ( ){
             break;
         case 6:
             printf("Sol\n");
-            walkFromTO (0.0, 0.0, -7.6, 0, 0, 1);
+            walkFromTO (der, arr, z, 0.0, 0.0, -7.6);
             gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
             break;
         case 7:
@@ -701,14 +663,19 @@ void menuChoise ( ){
             break;
         case 11:
             printf("Jupiter\n");
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            walkFromTO (der, arr, z, jupiter_matrix[12], jupiter_matrix[13], jupiter_matrix[14]);
+            printf ( "JUPITER (%F,%F,%F)\n", jupiter_matrix[12], jupiter_matrix[13], z-jupiter_matrix[14]);
+            /*gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);/*{
+                glRotatef( (((float) dia / 365)*360)/11, 0, 1.0f, 0 );
+            }*/
             break;
         case 12:
             printf("Saturno\n");
-            //getXYZ (6=='Saturno');
-            getXYZ (6);
-            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);{
-                glRotatef( -(((float) dia / 365)*360)/29, 0, 1.0f, 0 );
-            }
+            walkFromTO (der, arr, z, saturno_matrix[12], saturno_matrix[13], saturno_matrix[14]);
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);/*{
+                glRotatef( (((float) dia / 365)*360)/29, 0, 1.0f, 0 );
+            }*/
             break;
         case 13:
             printf("Urano\n");
@@ -730,9 +697,78 @@ void menuChoise ( ){
     }
 }
 
+void loadSkyBox ( ) {
+    glPushMatrix();
+     // Enable/Disable features
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+    glColor4f(1,1,1,1);
+    
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  50.5f, -100.5f, -50.5f );
+        glTexCoord2f(1, 0); glVertex3f( -50.5f, -100.5f, -50.5f );
+        glTexCoord2f(1, 1); glVertex3f( -50.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 1); glVertex3f(  50.5f,  100.5f, -50.5f );
+    glEnd();
+    
+    // Render the left quad
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  100.5f, -100.5f,  100.5f );
+        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -100.5f );
+        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -100.5f );
+        glTexCoord2f(0, 1); glVertex3f(  100.5f,  100.5f,  100.5f );
+    glEnd();
+    
+    // Render the back quad
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+       glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f,  50.5f );
+       glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f,  50.5f );
+       glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f,  50.5f );
+       glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f,  50.5f );
+    glEnd();
+    
+    // Render the right quad
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -100.5f );
+        glTexCoord2f(1, 0); glVertex3f( -100.5f, -100.5f,  100.5f );
+        glTexCoord2f(1, 1); glVertex3f( -100.5f,  100.5f,  100.5f );
+        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -100.5f );
+    glEnd();
+    
+    // Render the top quad
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 0); glVertex3f( -100.5f,  100.5f,  50.5f );
+        glTexCoord2f(1, 0); glVertex3f(  100.5f,  100.5f,  50.5f );
+        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -50.5f );
+    glEnd();
+    
+    // Render the bottom quad
+    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -50.5f );
+        glTexCoord2f(0, 1); glVertex3f( -100.5f, -100.5f,  50.5f );
+        glTexCoord2f(1, 1); glVertex3f(  100.5f, -100.5f,  50.5f );
+        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -50.5f );
+    glEnd();
+
+    glPopAttrib();
+    glPopMatrix();
+}
 void displayevent(void) {
     // limpia la escena (ventana)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    loadSkyBox();
+    
      // inicializa la Matriz de transformación de coordenadas (Matriz del Modelo)
     glLoadIdentity();
     // verfica superficies visibles
@@ -774,7 +810,7 @@ void displayevent(void) {
     meteoro(a[14]+a14, 0, b[14]);
     meteoro(a[15]+a15, 0, b[15]);
     meteoro(a[16]+a16, 0, b[16]);
-    meteoro(a[17]+a17, 0,b[17]); 
+    meteoro(a[17]+a17, 0,b[17]);
 
     glutSwapBuffers();
 }

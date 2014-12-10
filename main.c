@@ -425,11 +425,9 @@ void nemesis(float x, float y, float z){
         x=sqrt(1-z*z/900)*20;
     else
         x=sqrt(1-z*z/900)*(-20);
-    //glRotatef(11, 0,0,0 );
     setZnemesis(z);
     setXnemesis(x);
-    glTranslatef (x,y,z); 
-    //render_esfera(0.8, 100, 32 , 5);    
+    glTranslatef (x,y,z);
     glutSolidSphere (1, 100, 100);
     glPopMatrix ();
 }
@@ -615,14 +613,13 @@ void walkFromTO ( float fromX, float fromY, float fromZ, float toX, float toY, f
     printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
 }
 
-void multiplicaLaWea (double angulo, double *coordenadas, float x, float y, float z) {
-    coordenadas[0] = cos(angulo)*x + sin(angulo)*z;
-    coordenadas[1] = y;
-    coordenadas[2] = -sin(angulo)*x + cos(angulo)*z;
+void multiplicaLaWea (GLfloat *matrix, double *coordenadas) {
+    coordenadas[0] = (-matrix[0]*matrix[12]) + (-matrix[4]*matrix[13]) + (-matrix[8]*matrix[14]);
+    coordenadas[1] = (-matrix[1]*matrix[12]) + (-matrix[5]*matrix[13]) + (-matrix[9]*matrix[14]);
+    coordenadas[2] = (-matrix[2]*matrix[12]) + (-matrix[6]*matrix[13]) + (-matrix[10]*matrix[14]);
 }
 
 void menuChoise ( ){
-    float angulo;
     switch (value){
         case 0:
             //set camera position
@@ -661,12 +658,9 @@ void menuChoise ( ){
             break;
         case 11:
             printf("Jupiter\n");
-            hora += 50.0;
-            angulo = (((double) dia / 365)*360)/11;
-            multiplicaLaWea(angulo, jupiterXYZ, 8.4,0.0,-2);
+            multiplicaLaWea(jupiter_matrix, jupiterXYZ);
             gluLookAt(jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
             printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2]);
-            printf ( "Angulo = %F\n", angulo);
             break;
         case 12:
             printf("Saturno\n");
@@ -763,7 +757,7 @@ void loadSkyBox ( ) {
 void displayevent(void) {
     // limpia la escena (ventana)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
+
     loadSkyBox();
     
      // inicializa la Matriz de transformación de coordenadas (Matriz del Modelo)
@@ -786,7 +780,7 @@ void displayevent(void) {
     jupiter(8.4,0.0,-2);
     saturno(-11.6,0.0,0);
     urano(14,0.0,0);
-    neptuno(-16,0.0,0);    
+    neptuno(-16,0.0,0);
 
     meteoro(a[0]+a0,0,b[0]); //1
     meteoro (a[1]+a1, 0, b[1]);
@@ -808,7 +802,6 @@ void displayevent(void) {
     meteoro(a[15]+a15, 0, b[15]);
     meteoro(a[16]+a16, 0, b[16]);
     meteoro(a[17]+a17, 0,b[17]);
-
     glutSwapBuffers();
 }
 

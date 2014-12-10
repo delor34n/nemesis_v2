@@ -17,7 +17,7 @@
  *  C O N S T A N T E S  * 
  *                       *
  *************************/
-#define NUM_TEXTURAS 15
+#define NUM_TEXTURAS 16
 #define MAX_TAM_ESFERA 10000
 
 /***************************
@@ -704,55 +704,55 @@ void loadSkyBox ( ) {
     // Render the front quad
     glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(  50.5f, -100.5f, -50.5f );
-        glTexCoord2f(1, 0); glVertex3f( -50.5f, -100.5f, -50.5f );
-        glTexCoord2f(1, 1); glVertex3f( -50.5f,  100.5f, -50.5f );
-        glTexCoord2f(0, 1); glVertex3f(  50.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 0); glVertex3f(  200.5f, -200.5f, -200.5f );
+        glTexCoord2f(1, 0); glVertex3f( -200.5f, -200.5f, -200.5f );
+        glTexCoord2f(1, 1); glVertex3f( -200.5f,  200.5f, -200.5f );
+        glTexCoord2f(0, 1); glVertex3f(  200.5f,  200.5f, -200.5f );
     glEnd();
     
     // Render the left quad
-    glBindTexture(GL_TEXTURE_2D, textura[10]);
+    glBindTexture(GL_TEXTURE_2D, textura[11]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(  100.5f, -100.5f,  50.5f );
-        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -50.5f );
-        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -50.5f );
-        glTexCoord2f(0, 1); glVertex3f(  100.5f,  100.5f,  50.5f );
+        glTexCoord2f(0, 0); glVertex3f(  200.5f, -200.5f,  200.5f );
+        glTexCoord2f(1, 0); glVertex3f(  200.5f, -200.5f, -200.5f );
+        glTexCoord2f(1, 1); glVertex3f(  200.5f,  200.5f, -200.5f );
+        glTexCoord2f(0, 1); glVertex3f(  200.5f,  200.5f,  200.5f );
     glEnd();
     
     // Render the back quad
-    glBindTexture(GL_TEXTURE_2D, textura[10]);
+    glBindTexture(GL_TEXTURE_2D, textura[12]);
     glBegin(GL_QUADS);
-       glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f,  50.5f );
-       glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f,  50.5f );
-       glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f,  50.5f );
-       glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f,  50.5f );
+       glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f,  200.5f );
+       glTexCoord2f(1, 0); glVertex3f(  200.5f, -200.5f,  200.5f );
+       glTexCoord2f(1, 1); glVertex3f(  200.5f,  200.5f,  200.5f );
+       glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f,  200.5f );
     glEnd();
     
     // Render the right quad
-    glBindTexture(GL_TEXTURE_2D, textura[10]);
+    glBindTexture(GL_TEXTURE_2D, textura[13]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -50.5f );
-        glTexCoord2f(1, 0); glVertex3f( -100.5f, -100.5f,  50.5f );
-        glTexCoord2f(1, 1); glVertex3f( -100.5f,  100.5f,  50.5f );
-        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f, -200.5f );
+        glTexCoord2f(1, 0); glVertex3f( -200.5f, -200.5f,  200.5f );
+        glTexCoord2f(1, 1); glVertex3f( -200.5f,  200.5f,  200.5f );
+        glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f, -200.5f );
     glEnd();
     
     // Render the top quad
-    glBindTexture(GL_TEXTURE_2D, textura[10]);
+    glBindTexture(GL_TEXTURE_2D, textura[14]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -50.5f );
-        glTexCoord2f(0, 0); glVertex3f( -100.5f,  100.5f,  50.5f );
-        glTexCoord2f(1, 0); glVertex3f(  100.5f,  100.5f,  50.5f );
-        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f, -200.5f );
+        glTexCoord2f(0, 0); glVertex3f( -200.5f,  200.5f,  200.5f );
+        glTexCoord2f(1, 0); glVertex3f(  200.5f,  200.5f,  200.5f );
+        glTexCoord2f(1, 1); glVertex3f(  200.5f,  200.5f, -200.5f );
     glEnd();
     
     // Render the bottom quad
-    glBindTexture(GL_TEXTURE_2D, textura[10]);
+    glBindTexture(GL_TEXTURE_2D, textura[15]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -50.5f );
-        glTexCoord2f(0, 1); glVertex3f( -100.5f, -100.5f,  50.5f );
-        glTexCoord2f(1, 1); glVertex3f(  100.5f, -100.5f,  50.5f );
-        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -50.5f );
+        glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f, -200.5f );
+        glTexCoord2f(0, 1); glVertex3f( -200.5f, -200.5f,  200.5f );
+        glTexCoord2f(1, 1); glVertex3f(  200.5f, -200.5f,  200.5f );
+        glTexCoord2f(1, 0); glVertex3f(  200.5f, -200.5f, -200.5f );
     glEnd();
 
     glPopAttrib();

@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <malloc.h>
-//#include <mem.h>
 #include <math.h>
 #include <string.h>
 #include <time.h>
@@ -18,7 +17,7 @@
  *  C O N S T A N T E S  * 
  *                       *
  *************************/
-#define NUM_TEXTURAS 10
+#define NUM_TEXTURAS 15
 #define MAX_TAM_ESFERA 10000
 
 /***************************
@@ -124,6 +123,9 @@ GLfloat saturno_matrix[16];
 GLfloat urano_matrix[16];
 GLfloat neptuno_matrix[16];
 
+float uranoXYZ[3];
+double jupiterXYZ[3];
+
 /***********************
  *                     *
  *  F U N C I O N E S  * 
@@ -133,61 +135,53 @@ void *CargaTGA(char *filename,int *tam) {
     GLubyte TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};
     GLubyte TGAcompare[12];
     GLubyte header[6];
-    GLuint  bytesPerPixel;
-    GLuint  imageSize;
-    GLuint  temp,i;
-    GLuint  type=GL_RGBA;
-    Imagen  texture;
+    GLuint bytesPerPixel;
+    GLuint imageSize;
+    GLuint temp,i;
+    GLuint type=GL_RGBA;
+    Imagen texture;
     GLubyte *aux;
-
     FILE *file = fopen(filename, "rb");
-    if (file == NULL) {
+    if (file == NULL){
         strcpy(resultado_carga_tga, "archivo");
         return NULL;
     }
-
+    
     /* Esto abre y comprueba que es un TGA */
     fread(TGAcompare,1,sizeof(TGAcompare),file);
-    if (memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0) {
+    if (memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0){
         strcpy(resultado_carga_tga, "memcmp");
         return NULL;
     }
-    
     /* Leemos la cabecera*/
     fread(header,1,sizeof(header),file);
-    
     /* Determinamos el tamaño */
-    texture.width  = header[1] * 256 + header[0];
+    texture.width = header[1] * 256 + header[0];
     texture.height = header[3] * 256 + header[2];
-    
-    /* Vemos las características y comprobamos si son correctas */
-    if(	texture.width	<=0	||
+    // Vemos las características y comprobamos si son correctas
+    if( texture.width	<=0	||
         texture.height	<=0	||
         texture.width >256      ||
         texture.height !=texture.width || ( header[4]!=32)) {
-            fclose(file);
-            strcpy(resultado_carga_tga, "tamagno");
-            return NULL;
+        fclose(file);
+        strcpy(resultado_carga_tga, "tamagno");
+        return NULL;
     }
-
     /* Calculamos la memoria que será necesaria */
-    texture.bpp	  = header[4];
+    texture.bpp	= header[4];
     bytesPerPixel = texture.bpp/8;
-    imageSize	  = texture.width*texture.height*bytesPerPixel;
-
+    imageSize = texture.width*texture.height*bytesPerPixel;
     /* Reservamos memoria */
     texture.imageData=(GLubyte *)malloc(imageSize);
     //sprintf(resultado_carga_tga, "%d", imageSize);
-
     /* Cargamos y hacemos alguna comprobaciones */
-    if ( texture.imageData==NULL || fread(texture.imageData, 1, imageSize, file)!=imageSize) {
+    if( texture.imageData==NULL || fread(texture.imageData, 1, imageSize, file)!=imageSize) {
         if(texture.imageData!=NULL)
             free(texture.imageData);
         fclose(file);
         strcpy(resultado_carga_tga, "imagedata");
         return NULL;
     }
-
     /* El TGA viene en formato BGR, lo pasamos a RGB */
     for(i=0; i<(GLuint)(imageSize); i+=bytesPerPixel) {
         temp=texture.imageData[i];
@@ -195,38 +189,33 @@ void *CargaTGA(char *filename,int *tam) {
         texture.imageData[i + 2] = temp;
     }
     fclose (file);
-    
-    /* Ahora cambiamos el orden de las líneas, como si hiciesemos un flip vertical. */
+    /* Ahora, cambiamos el orden de las líneas, como si hiciesemos
+    un flip vertical. */
     aux=(GLubyte *)malloc(imageSize);
     for(i=0; i<texture.height; i++)
-        memcpy(&aux[imageSize-((i+1)*texture.width*4)],&texture.imageData[i*texture.width*4],texture.width*4);
-    
+    memcpy(&aux[imageSize-((i+1)*texture.width*4)],&texture.imageData[i*texture.width*4],texture.width*4);
     /* tam devolverá el tamaño */
     *tam=texture.width;
     /* Liberamos memoria */
     free(texture.imageData);
-    
     return aux;
 }
 
 int carga_texturas() {
-
     int tam[NUM_TEXTURAS];
     int i;
     char nombre_archivo[30];
-
     for(i = 0; i < NUM_TEXTURAS; i++) {
         sprintf(nombre_archivo,"img/textura%d.tga", i);
         textura_datos[i]=(char *)CargaTGA(nombre_archivo,&tam[i]);
-        
-        if (textura_datos[i] == NULL)
+        if (textura_datos[i] == NULL){
             //strcpy(resultado_carga_tga, "-1");
             return -1;
-        
+        }
         /* Genera una textura, referenciada por el entero textura */
         glGenTextures (NUM_TEXTURAS, &textura[i]);
         /* Esta función indica que será una textura en 2D. Las siguientes
-        funciones hará referencia a esta textura */
+        funciones hará referncia a esta textura */
         glBindTexture (GL_TEXTURE_2D, textura[i]);
         /* Aquí ajustamos algunos parámetros de la textura, concretamente los filtros */
         glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -591,6 +580,7 @@ void urano (float x, float y, float z){
     glRotatef(anos/84, 0,1,0 );
     glTranslatef (x, y, z); 
     render_esfera(0.342, 100, 32 , 7);
+    glGetFloatv(GL_MODELVIEW_MATRIX, urano_matrix);
     glPopMatrix ();
 }
 
@@ -625,7 +615,14 @@ void walkFromTO ( float fromX, float fromY, float fromZ, float toX, float toY, f
     printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
 }
 
+void multiplicaLaWea (double angulo, double *coordenadas, float x, float y, float z) {
+    coordenadas[0] = cos(angulo)*x + sin(angulo)*z;
+    coordenadas[1] = y;
+    coordenadas[2] = -sin(angulo)*x + cos(angulo)*z;
+}
+
 void menuChoise ( ){
+    float angulo;
     switch (value){
         case 0:
             //set camera position
@@ -642,6 +639,7 @@ void menuChoise ( ){
             break;
         case 4:
             printf("Detener Movimiento\n");
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
             hora  = 0.0;
             break;
         case 6:
@@ -663,19 +661,15 @@ void menuChoise ( ){
             break;
         case 11:
             printf("Jupiter\n");
-            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
-            walkFromTO (der, arr, z, jupiter_matrix[12], jupiter_matrix[13], jupiter_matrix[14]);
-            printf ( "JUPITER (%F,%F,%F)\n", jupiter_matrix[12], jupiter_matrix[13], z-jupiter_matrix[14]);
-            /*gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);/*{
-                glRotatef( (((float) dia / 365)*360)/11, 0, 1.0f, 0 );
-            }*/
+            hora += 50.0;
+            angulo = (((double) dia / 365)*360)/11;
+            multiplicaLaWea(angulo, jupiterXYZ, 8.4,0.0,-2);
+            gluLookAt(jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2]);
+            printf ( "Angulo = %F\n", angulo);
             break;
         case 12:
             printf("Saturno\n");
-            walkFromTO (der, arr, z, saturno_matrix[12], saturno_matrix[13], saturno_matrix[14]);
-            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);/*{
-                glRotatef( (((float) dia / 365)*360)/29, 0, 1.0f, 0 );
-            }*/
             break;
         case 13:
             printf("Urano\n");
@@ -701,13 +695,14 @@ void loadSkyBox ( ) {
     glPushMatrix();
      // Enable/Disable features
     glPushAttrib(GL_ENABLE_BIT);
-    glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
+    glEnable(GL_TEXTURE_2D);
     glColor4f(1,1,1,1);
     
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    // Render the front quad
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(  50.5f, -100.5f, -50.5f );
         glTexCoord2f(1, 0); glVertex3f( -50.5f, -100.5f, -50.5f );
@@ -716,16 +711,16 @@ void loadSkyBox ( ) {
     glEnd();
     
     // Render the left quad
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(  100.5f, -100.5f,  100.5f );
-        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -100.5f );
-        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -100.5f );
-        glTexCoord2f(0, 1); glVertex3f(  100.5f,  100.5f,  100.5f );
+        glTexCoord2f(0, 0); glVertex3f(  100.5f, -100.5f,  50.5f );
+        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f, -50.5f );
+        glTexCoord2f(1, 1); glVertex3f(  100.5f,  100.5f, -50.5f );
+        glTexCoord2f(0, 1); glVertex3f(  100.5f,  100.5f,  50.5f );
     glEnd();
     
     // Render the back quad
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f,  50.5f );
        glTexCoord2f(1, 0); glVertex3f(  100.5f, -100.5f,  50.5f );
@@ -734,16 +729,16 @@ void loadSkyBox ( ) {
     glEnd();
     
     // Render the right quad
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -100.5f );
-        glTexCoord2f(1, 0); glVertex3f( -100.5f, -100.5f,  100.5f );
-        glTexCoord2f(1, 1); glVertex3f( -100.5f,  100.5f,  100.5f );
-        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -100.5f );
+        glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -50.5f );
+        glTexCoord2f(1, 0); glVertex3f( -100.5f, -100.5f,  50.5f );
+        glTexCoord2f(1, 1); glVertex3f( -100.5f,  100.5f,  50.5f );
+        glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -50.5f );
     glEnd();
     
     // Render the top quad
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 1); glVertex3f( -100.5f,  100.5f, -50.5f );
         glTexCoord2f(0, 0); glVertex3f( -100.5f,  100.5f,  50.5f );
@@ -752,7 +747,7 @@ void loadSkyBox ( ) {
     glEnd();
     
     // Render the bottom quad
-    glBindTexture(GL_TEXTURE_2D, textura[0]);
+    glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f( -100.5f, -100.5f, -50.5f );
         glTexCoord2f(0, 1); glVertex3f( -100.5f, -100.5f,  50.5f );
@@ -762,7 +757,9 @@ void loadSkyBox ( ) {
 
     glPopAttrib();
     glPopMatrix();
+    
 }
+
 void displayevent(void) {
     // limpia la escena (ventana)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

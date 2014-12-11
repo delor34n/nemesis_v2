@@ -123,8 +123,27 @@ GLfloat saturno_matrix[16];
 GLfloat urano_matrix[16];
 GLfloat neptuno_matrix[16];
 
-float uranoXYZ[3];
+double mercurioXYZ[3];
+double venusXYZ[3];
+double tierraXYZ[3];
+double marteXYZ[3];
 double jupiterXYZ[3];
+double saturnoXYZ[3];
+double uranoXYZ[3];
+double neptunoXYZ[3];
+
+float sol_[]={0.0,0.0,0.0};
+float nemesis_[]={0.0,0.0,-30.0};
+float mercurio_[]={2.0,0.0,2.0};
+float venus_[]={3.0,0.0,2.0};
+float tierra_[]={5.0,0.0,0.0};
+float marte_[]={6.0,0.0,0.0};
+float jupiter_[]={8.4,0.0,-2.0};
+float saturno_[]={-11.6,0.0,0.0};
+float urano_[]={14.0,0.0,0.0};
+float neptuno_[]={-16.0,0.0,0.0};
+
+float speed = 1;
 
 /***********************
  *                     *
@@ -407,7 +426,7 @@ void sol(float x, float y, float z) {
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     
     glTranslatef (x, y, z); 
-    render_esfera(4.0, 100, 32 , 0);
+    render_esfera(3.0, 100, 32 , 0);
     glPopMatrix ();
 }
 
@@ -601,25 +620,32 @@ void neptuno (float x, float y, float z){
 }
 //Fin funciones planetas
 
-void walkFromTO ( float fromX, float fromY, float fromZ, float toX, float toY, float toZ ) {
-
-    float newDistanceX =  sqrt(toX*toX + der*der)/100;
-    float newDistanceZ =  sqrt(toZ*toZ + z*z)/100;    
-    printf ( "FROM: x >> %F , y >> %F , z >> %F \n", fromX, fromY, fromZ);
-    printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
+int walkFromTO ( float fromX, float fromZ, float toX, float toZ ) {
+    float newDistanceX =  (toX - fromX)/50;
+    float newDistanceZ =  (toZ - fromZ)/50;
     der = fromX + newDistanceX;
-    z = fromZ + newDistanceZ; 
-    printf ( "FROM: x >> %F , y >> %F , z >> %F \n", fromX, fromY, fromZ);
-    printf ( "TO: x >> %F , y >> %F , z >> %F \n", toX, toY, toZ);
+    z = fromZ + newDistanceZ;
+    
+    /*if ( fabs(der) <= toX-0.1 || fabs(z) <= toZ-0.1 )
+        return 1;
+    else
+        return 0;*/
+    printf ( "der, z = %F, %F \n", fabs(toX-der), fabs(toZ-z));
+    if ( fabs(toX-der) > 0.1 || fabs(toZ-z)> 0.1 )
+        return 1;
+    else
+        return 0;
+    
 }
 
-void multiplicaLaWea (GLfloat *matrix, double *coordenadas) {
-    coordenadas[0] = (-matrix[0]*matrix[12]) + (-matrix[4]*matrix[13]) + (-matrix[8]*matrix[14]);
-    coordenadas[1] = (-matrix[1]*matrix[12]) + (-matrix[5]*matrix[13]) + (-matrix[9]*matrix[14]);
-    coordenadas[2] = (-matrix[2]*matrix[12]) + (-matrix[6]*matrix[13]) + (-matrix[10]*matrix[14]);
+void getOrbitStartPoint (double angulo, double *coordenadas, float x, float y, float z) {
+    coordenadas[0] = cos(angulo)*x + sin(angulo)*z;
+    coordenadas[1] = y;
+    coordenadas[2] = -sin(angulo)*x + cos(angulo)*z;
 }
 
 void menuChoise ( ){
+    double angulo;
     switch (value){
         case 0:
             //set camera position
@@ -641,7 +667,7 @@ void menuChoise ( ){
             break;
         case 6:
             printf("Sol\n");
-            walkFromTO (der, arr, z, 0.0, 0.0, -7.6);
+            walkFromTO (der, z, 0.0, -7.6);
             gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
             break;
         case 7:
@@ -655,15 +681,46 @@ void menuChoise ( ){
             break;
         case 10:
             printf("Marte\n");
+            if ( walkFromTO ( der, z, 6.0, 0.0 ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50;
+                angulo = (((double) dia / 365)*360)/(18.8*(speed));
+                getOrbitStartPoint(angulo, marteXYZ, 6.0,0.0,0.0);
+                gluLookAt(marteXYZ[0], 0.0, marteXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "der, z = %F, %F \n", der, z);
+            
+            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", marteXYZ[0], marteXYZ[1], marteXYZ[2]);
+            printf ( "Angulo = %F\n", angulo);
             break;
         case 11:
             printf("Jupiter\n");
-            multiplicaLaWea(jupiter_matrix, jupiterXYZ);
-            gluLookAt(jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            if ( walkFromTO ( der, z, 8.4, -2.0 ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50;
+                angulo = (((double) dia / 365)*360)/(110*(speed));
+                getOrbitStartPoint(angulo, jupiterXYZ, 8.4,0.0,-2);
+                gluLookAt(jupiterXYZ[0], 0.0, jupiterXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "der, z = %F, %F \n", der, z);
             printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2]);
+            printf ( "Angulo = %F\n", angulo);
             break;
         case 12:
             printf("Saturno\n");
+            if ( walkFromTO ( der, z, -11.6, 0.0 ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50;
+                angulo = (((double) dia / 365)*360)/(290*(speed));
+                getOrbitStartPoint(angulo, saturnoXYZ, -11.6,0.0,0.0);
+                gluLookAt(saturnoXYZ[0], 0.0, saturnoXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "der, z = %F, %F \n", der, z);
+            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", saturnoXYZ[0], saturnoXYZ[1], saturnoXYZ[2]);
+            printf ( "Angulo = %F\n", angulo);
             break;
         case 13:
             printf("Urano\n");
@@ -771,16 +828,16 @@ void displayevent(void) {
     glEnable(GL_LIGHT0);
     
     //Dibujamos los planetas
-    sol(0.0,0.0,1);
-    nemesis(0,0,-30);
-    mercurio(2,0.0,2);
-    venus(3,0.0,2);
-    tierra(5,0.0,0.0);
-    marte(6,0.0,0);
-    jupiter(8.4,0.0,-2);
-    saturno(-11.6,0.0,0);
-    urano(14,0.0,0);
-    neptuno(-16,0.0,0);
+    sol ( sol_[0],sol_[1],sol_[2] );
+    nemesis ( nemesis_[0], nemesis_[1], nemesis_[2] );
+    mercurio ( mercurio_[0], mercurio_[1], mercurio_[2] );
+    venus ( venus_[0], venus_[1], venus_[2] );
+    tierra ( tierra_[0], tierra_[1], tierra_[2] );
+    marte ( marte_[0], marte_[1], marte_[2] );
+    jupiter ( jupiter_[0], jupiter_[1], jupiter_[2] );
+    saturno ( saturno_[0], saturno_[1], saturno_[2] );
+    urano ( urano_[0], urano_[1], urano_[2] );
+    neptuno ( neptuno_[0], neptuno_[1], neptuno_[2] );
 
     meteoro(a[0]+a0,0,b[0]); //1
     meteoro (a[1]+a1, 0, b[1]);
@@ -879,6 +936,16 @@ void createMenu(void){
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+void Keyboard(unsigned char key, int x, int y){
+    if ( speed > 0.5 )
+        switch (key) {
+            case 'j':   speed-=0.5; break;
+            case 'k':   speed+=0.5; break;
+        }
+    else
+        speed += 1;
+}
+
 void specialkeyevent( int key, int Xx, int Yy ) {
     // manejo de teclas especiales
     switch ( key ) {
@@ -896,6 +963,7 @@ void specialkeyevent( int key, int Xx, int Yy ) {
         case GLUT_KEY_F6:    der = 0.00; break;
         case GLUT_KEY_F8:    explo = 1; break;
         case GLUT_KEY_F7:    aux2= 1; break;
+        
    }
    // redibuja la escena
    glutPostRedisplay();
@@ -950,6 +1018,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc( displayevent );
     //Cambio de teclas por menú.
     glutSpecialFunc( specialkeyevent );
+    glutKeyboardFunc (Keyboard);
     glutIdleFunc( animacion );
     aux = carga_texturas();
     // lazo de eventos

@@ -625,12 +625,7 @@ int walkFromTO ( float fromX, float fromZ, float toX, float toZ ) {
     float newDistanceZ =  (toZ - fromZ)/50;
     der = fromX + newDistanceX;
     z = fromZ + newDistanceZ;
-    
-    /*if ( fabs(der) <= toX-0.1 || fabs(z) <= toZ-0.1 )
-        return 1;
-    else
-        return 0;*/
-    printf ( "der, z = %F, %F \n", fabs(toX-der), fabs(toZ-z));
+
     if ( fabs(toX-der) > 0.1 || fabs(toZ-z)> 0.1 )
         return 1;
     else
@@ -672,61 +667,99 @@ void menuChoise ( ){
             break;
         case 7:
             printf("Mercurio\n");
+            if ( walkFromTO ( der, z, mercurio_[0], mercurio_[2] ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50.0;
+                angulo = (((float) dia / 365)*360)/(2.4*(speed));
+                getOrbitStartPoint(angulo, mercurioXYZ, mercurio_[0], mercurio_[1], mercurio_[2]);
+                gluLookAt(mercurioXYZ[0], 0.0, mercurioXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "MERCURIO(x,y,z) = (%F, %F, %F)\n", mercurioXYZ[0], mercurioXYZ[1], mercurioXYZ[2]);
             break;
         case 8:
             printf("Venus\n");
+            if ( walkFromTO ( der, z, venus_[0], venus_[2] ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50.0;
+                angulo = (((float) dia / 365)*360)/(6*(speed));
+                getOrbitStartPoint(angulo, venusXYZ, venus_[0], venus_[1], venus_[2]);
+                gluLookAt(venusXYZ[0], 0.0, venusXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "VENUS(x,y,z) = (%F, %F, %F)\n", venusXYZ[0], venusXYZ[1], venusXYZ[2]);
             break;
         case 9:
             printf("Tierra\n");
+            if ( walkFromTO ( der, z, tierra_[0], tierra_[2] ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50.0;
+                angulo = (((float) dia / 686)*360)/(1*(speed));
+                getOrbitStartPoint(angulo, tierraXYZ, tierra_[0], tierra_[1], tierra_[2]);
+                gluLookAt(tierraXYZ[0], 0.0, tierraXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "TIERRA(x,y,z) = (%F, %F, %F)\n", tierraXYZ[0], tierraXYZ[1], tierraXYZ[2]);
             break;
         case 10:
             printf("Marte\n");
-            if ( walkFromTO ( der, z, 6.0, 0.0 ) ) {
+            if ( walkFromTO ( der, z, marte_[0], marte_[2] ) ) {
                 gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
             } else {
-                hora += 50;
+                hora += 50.0;
                 angulo = (((double) dia / 365)*360)/(18.8*(speed));
-                getOrbitStartPoint(angulo, marteXYZ, 6.0,0.0,0.0);
+                getOrbitStartPoint(angulo, marteXYZ, marte_[0], marte_[1], marte_[2]);
                 gluLookAt(marteXYZ[0], 0.0, marteXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
             }
-            printf ( "der, z = %F, %F \n", der, z);
-            
-            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", marteXYZ[0], marteXYZ[1], marteXYZ[2]);
-            printf ( "Angulo = %F\n", angulo);
+            printf ( "MARTE(x,y,z) = (%F, %F, %F)\n", marteXYZ[0], marteXYZ[1], marteXYZ[2]);
             break;
         case 11:
             printf("Jupiter\n");
-            if ( walkFromTO ( der, z, 8.4, -2.0 ) ) {
+            if ( walkFromTO ( der, z, jupiter_[0], jupiter_[2] ) ) {
                 gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
             } else {
-                hora += 50;
+                hora += 50.0;
                 angulo = (((double) dia / 365)*360)/(110*(speed));
-                getOrbitStartPoint(angulo, jupiterXYZ, 8.4,0.0,-2);
+                getOrbitStartPoint(angulo, jupiterXYZ, jupiter_[0], jupiter_[1], jupiter_[2]);
                 gluLookAt(jupiterXYZ[0], 0.0, jupiterXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
             }
-            printf ( "der, z = %F, %F \n", der, z);
-            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2]);
-            printf ( "Angulo = %F\n", angulo);
+            printf ( "JUPITER(x,y,z) = (%F, %F, %F)\n", jupiterXYZ[0], jupiterXYZ[1], jupiterXYZ[2]);
             break;
         case 12:
             printf("Saturno\n");
-            if ( walkFromTO ( der, z, -11.6, 0.0 ) ) {
+            if ( walkFromTO ( der, z, saturno_[0], saturno_[2] ) ) {
                 gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
             } else {
-                hora += 50;
+                hora += 50.0;
                 angulo = (((double) dia / 365)*360)/(290*(speed));
-                getOrbitStartPoint(angulo, saturnoXYZ, -11.6,0.0,0.0);
+                getOrbitStartPoint(angulo, saturnoXYZ, saturno_[0],saturno_[1],saturno_[2]);
                 gluLookAt(saturnoXYZ[0], 0.0, saturnoXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
             }
-            printf ( "der, z = %F, %F \n", der, z);
-            printf ( "Where the hell are you (x,y,z)=(%F, %F, %F)\n", saturnoXYZ[0], saturnoXYZ[1], saturnoXYZ[2]);
-            printf ( "Angulo = %F\n", angulo);
+            printf ( "SATURNO(x,y,z) = (%F, %F, %F)\n", saturnoXYZ[0], saturnoXYZ[1], saturnoXYZ[2]);
             break;
         case 13:
             printf("Urano\n");
+            if ( walkFromTO ( der, z, urano_[0], urano_[2] ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50.0;
+                angulo = (((float) dia / 365)*360)/(840*(speed));
+                getOrbitStartPoint(angulo, uranoXYZ, urano_[0],urano_[1],urano_[2]);
+                gluLookAt(uranoXYZ[0], 0.0, uranoXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "URANO(x,y,z) = (%F, %F, %F)\n", uranoXYZ[0], uranoXYZ[1], uranoXYZ[2]);
             break;
         case 14:
             printf("Neptuno\n");
+            if ( walkFromTO ( der, z, neptuno_[0], neptuno_[2] ) ) {
+                gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            } else {
+                hora += 50.0;
+                angulo = (((float) dia / 365)*360)/(164*(speed));
+                getOrbitStartPoint(angulo, neptunoXYZ, neptuno_[0],neptuno_[1],neptuno_[2]);
+                gluLookAt(neptunoXYZ[0], 0.0, neptunoXYZ[2], 0.0, 0.0, 0.0, 0, 1, 0);
+            }
+            printf ( "NEPTUNO(x,y,z) = (%F, %F, %F)\n", neptunoXYZ[0], neptunoXYZ[1], neptunoXYZ[2]);
             break;
         case 15:
             printf("Acerca de\n");
@@ -740,19 +773,24 @@ void menuChoise ( ){
             exit(1);
             break;
     }
+    printf ( "Speed = %F\n", speed);
+    printf ( "( x, y,  z ) = ( %F, %F , %F)\n", der, arr, z);
+    printf ( "Angulo = %F\n", angulo);
 }
 
+//Aplicamos la técnica SkyBox para aplicar una textura de fondo (Situar la escena dentro de un cubo con textura)
+//El orden siempre es FRENTE>IZQUIERDA>ATRÁS>DERECHA>ARRIBA>ABAJO
 void loadSkyBox ( ) {
     glPushMatrix();
-     // Enable/Disable features
+    
+     //Habilitamos y deshabilitamos algunas características.
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
     glDisable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
-    glColor4f(1,1,1,1);
     
-    // Render the front quad
+    //FRENTE
     glBindTexture(GL_TEXTURE_2D, textura[10]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(  200.5f, -200.5f, -200.5f );
@@ -761,7 +799,7 @@ void loadSkyBox ( ) {
         glTexCoord2f(0, 1); glVertex3f(  200.5f,  200.5f, -200.5f );
     glEnd();
     
-    // Render the left quad
+    //IZQUIERDA
     glBindTexture(GL_TEXTURE_2D, textura[11]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f(  200.5f, -200.5f,  200.5f );
@@ -770,7 +808,7 @@ void loadSkyBox ( ) {
         glTexCoord2f(0, 1); glVertex3f(  200.5f,  200.5f,  200.5f );
     glEnd();
     
-    // Render the back quad
+    //ATRÁS
     glBindTexture(GL_TEXTURE_2D, textura[12]);
     glBegin(GL_QUADS);
        glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f,  200.5f );
@@ -779,7 +817,7 @@ void loadSkyBox ( ) {
        glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f,  200.5f );
     glEnd();
     
-    // Render the right quad
+    //DERECHA
     glBindTexture(GL_TEXTURE_2D, textura[13]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f, -200.5f );
@@ -788,7 +826,7 @@ void loadSkyBox ( ) {
         glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f, -200.5f );
     glEnd();
     
-    // Render the top quad
+    //ARRIBA
     glBindTexture(GL_TEXTURE_2D, textura[14]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 1); glVertex3f( -200.5f,  200.5f, -200.5f );
@@ -797,7 +835,7 @@ void loadSkyBox ( ) {
         glTexCoord2f(1, 1); glVertex3f(  200.5f,  200.5f, -200.5f );
     glEnd();
     
-    // Render the bottom quad
+    //ABAJO
     glBindTexture(GL_TEXTURE_2D, textura[15]);
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex3f( -200.5f, -200.5f, -200.5f );
@@ -936,16 +974,24 @@ void createMenu(void){
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
+//Función para trabajar con las teclas del teclado (No teclas especiales)
 void Keyboard(unsigned char key, int x, int y){
-    if ( speed > 0.5 )
-        switch (key) {
-            case 'j':   speed-=0.5; break;
-            case 'k':   speed+=0.5; break;
-        }
-    else
-        speed += 1;
+    switch (key) {
+        //Aumenta velocidad
+        case 'j':
+            if ( speed-0.5 > 0 )
+                speed-=0.05;
+            else
+                speed = 0.001;
+            break;
+        //Disminuye la velocidad
+        case 'k':
+            speed+=0.05;
+            break;
+    }
 }
 
+//Función para trabajar con teclas especiales (F1,F2,...)
 void specialkeyevent( int key, int Xx, int Yy ) {
     // manejo de teclas especiales
     switch ( key ) {
@@ -988,6 +1034,7 @@ void reshapeevent(GLsizei width, GLsizei height) {
  *           *
  *************/
 int main(int argc, char** argv) {
+    
     int aux;	
     // inicialización del GLUT
     glutInit( &argc, argv );
@@ -997,20 +1044,26 @@ int main(int argc, char** argv) {
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutCreateWindow( "Nemesis v2.0" );
     glEnable(GL_SMOOTH);
+    
     // inicialización de los datos del programa
     anos = 0;
     dia  = 0;
     hora = 0;
     min  = 0;
-    z    = -35;
-    der  = 0;
     explo= 0;
     mov  = 0;
     mov2 = 0.01;
     mov3 = 0;
-    arr  = 5;
+
+    //derr = x; arr = y; z = z
+    der  = -5;
+    arr  = 0;
+    z    = -35;
+    
+    //Variable para controlar el menú.
     value = 0;
     
+    //Creamos el menú.
     createMenu();
     
     // registro de los eventos
@@ -1018,7 +1071,11 @@ int main(int argc, char** argv) {
     glutDisplayFunc( displayevent );
     //Cambio de teclas por menú.
     glutSpecialFunc( specialkeyevent );
+    
+    //Controlamos no sólo las teclas especiales, las normales también 
+    //(Para aumentar y reducir velocidad de rotación)
     glutKeyboardFunc (Keyboard);
+    
     glutIdleFunc( animacion );
     aux = carga_texturas();
     // lazo de eventos

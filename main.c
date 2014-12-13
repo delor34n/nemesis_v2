@@ -131,9 +131,9 @@ double jupiterXYZ[3];
 double saturnoXYZ[3];
 double uranoXYZ[3];
 double neptunoXYZ[3];
+double nemesisXYZ[3];
 
 float sol_[]={0.0,0.0,0.0};
-float nemesis_[]={0.0,0.0,-30.0};
 float mercurio_[]={2.0,0.0,2.0};
 float venus_[]={3.0,0.0,2.0};
 float tierra_[]={5.0,0.0,0.0};
@@ -142,8 +142,10 @@ float jupiter_[]={8.4,0.0,-2.0};
 float saturno_[]={-11.6,0.0,0.0};
 float urano_[]={14.0,0.0,0.0};
 float neptuno_[]={-16.0,0.0,0.0};
+float nemesis_[]={0.0,0.0,-30.0};
 
 float speed = 1;
+int textOFF = 0;
 
 /***********************
  *                     *
@@ -426,11 +428,11 @@ void sol(float x, float y, float z) {
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     
     glTranslatef (x, y, z); 
-    render_esfera(3.0, 100, 32 , 0);
+    render_esfera(2, 100, 32 , 0);
     glPopMatrix ();
 }
 
-void nemesis(float x, float y, float z){
+void nemesis(float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 0.0, 0.0, 1.0f};
@@ -439,19 +441,33 @@ void nemesis(float x, float y, float z){
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, mat_emision);
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     anos = ((float) dia / 365)*360;
-    z= z+mov;
+    z_= z_+mov;
     if(mov2>0)
-        x=sqrt(1-z*z/900)*20;
+        x=sqrt(1-z_*z_/900)*20;
     else
-        x=sqrt(1-z*z/900)*(-20);
-    setZnemesis(z);
+        x=sqrt(1-z_*z_/900)*(-20);
+    setZnemesis(z_);
     setXnemesis(x);
-    glTranslatef (x,y,z);
+    glTranslatef (x,y,z_);
     glutSolidSphere (1, 100, 100);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x, (GLfloat)y+1.2, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "NEMESIS";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void mercurio(float x,float y,float z){
+void mercurio(float x,float y,float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.1, 0.1, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 0.5, 0.5, 1.0f};
@@ -467,13 +483,27 @@ void mercurio(float x,float y,float z){
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef( anos/0.24, 0,1,0 );
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.03, 100, 32 , 3);    
     //glutSolidSphere (0.03, 100, 100);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+0.3, (GLfloat)y+2.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "MERCURIO";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void venus(float x, float y, float z){
+void venus(float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.1, 0.1, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 0.5, 0.5, 1.0f};
@@ -489,13 +519,27 @@ void venus(float x, float y, float z){
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef( anos/0.6, 0,1,0 );
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.08, 100, 32 , 2);    
     //glutSolidSphere (0.08, 100, 100);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1, (GLfloat)y-2.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "VENUS";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void tierra(float x, float y, float z){
+void tierra(float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.0, 0, 0.2, 1.0f}; 
     GLfloat mat_diffuse[] = {1.0, 1.0, 1.0, 1.0f};
@@ -509,13 +553,27 @@ void tierra(float x, float y, float z){
     anos = ((float) dia / 686)*360;
     glRotatef( anos, 0,1,0 );
     // glColor3f(0.0f, 1.0f, 0.0f);
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.08, 100, 32 , 1);    
     //glutSolidSphere (0.08, 100, 100);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1, (GLfloat)y+0.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "TIERRA";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void marte (float x, float y, float z){
+void marte (float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.5, 0.0, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 1.0, 1.0, 1.0f};
@@ -531,13 +589,27 @@ void marte (float x, float y, float z){
     glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 360.0);*/
     anos = ((float) dia / 365)*360;
     glRotatef( anos/1.88, 0,1,0 );
-    glTranslatef (x,y,z); 
+    glTranslatef (x,y,z_); 
     render_esfera(0.046, 100, 32 , 4);    
     //glutSolidSphere (0.046, 100, 100);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1, (GLfloat)y-1, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "MARTE";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void jupiter (float x, float y, float z){
+void jupiter (float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.1, 0.1, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 0.5, 0.5, 1.0f};
@@ -550,13 +622,27 @@ void jupiter (float x, float y, float z){
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     anos = ((float) dia / 365)*360;
     glRotatef( anos/11, 0,1,0 );
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.959, 100, 32 , 5);
     glGetFloatv(GL_MODELVIEW_MATRIX,jupiter_matrix);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1.5, (GLfloat)y-1.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "JUPITER";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void saturno (float x, float y, float z){
+void saturno (float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.1, 0.1, 0.0, 1.0};
     GLfloat mat_diffuse[] = {1.0, 0.5, 0.5, 1.0f};
@@ -574,15 +660,29 @@ void saturno (float x, float y, float z){
     //gira el planeta (Primero en torno al eje Y, ahora en torno al eje Z).
     glRotatef(90, 1, 0, 0);
     glRotatef(-anos/29, 0, 0, 1);   
-    glTranslatef (x, y, z);
+    glTranslatef (x, y, z_);
     render_esfera(0.805, 100, 32 ,6);
     glScalef(1, 1, 0.05);
     glutSolidTorus(0.3, 1.5, 32 , 32);
     glGetFloatv(GL_MODELVIEW_MATRIX, saturno_matrix);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1.5, (GLfloat)y-1.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "SATURNO";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void urano (float x, float y, float z){
+void urano (float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.0, 0.0, 0.3, 1.0};
     GLfloat mat_diffuse[] = {0.0, 0.5, 0.0, 1.0f};
@@ -595,13 +695,27 @@ void urano (float x, float y, float z){
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     anos = ((float) dia / 365)*360;
     glRotatef(anos/84, 0,1,0 );
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.342, 100, 32 , 7);
     glGetFloatv(GL_MODELVIEW_MATRIX, urano_matrix);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1.5, (GLfloat)y-1.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "URANO";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 
-void neptuno (float x, float y, float z){
+void neptuno (float x, float y, float z_){
     glPushMatrix ();
     GLfloat mat_emision[] = {0.0, 0.0, 0.3, 1.0};
     GLfloat mat_diffuse[] = {0.5, 0.5, 0.5, 1.0f};
@@ -614,9 +728,23 @@ void neptuno (float x, float y, float z){
     glMaterialfv (GL_FRONT, GL_DIFFUSE, mat_diffuse);
     anos = ((float) dia / 365)*360;
     glRotatef( anos/164, 0,1,0 );
-    glTranslatef (x, y, z); 
+    glTranslatef (x, y, z_); 
     render_esfera(0.328, 100, 32 , 8);
     glPopMatrix ();
+    
+    //Agregamos el nombre del planeta sólo al principio
+    if ( textOFF == 0 && der == -5 && arr == 0 && z == -35) {
+        glPushMatrix ();
+        glDisable(GL_LIGHTING);
+        glRasterPos3f((GLfloat)x+1.5, (GLfloat)y-1.5, (GLfloat)z_);
+        glColor3f(1,1,1);
+        const char *message = "NEPTUNO";
+        while (*message) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *message++);
+        }
+        glEnable(GL_LIGHTING);
+        glPopMatrix ();
+    }
 }
 //Fin funciones planetas
 
@@ -648,10 +776,13 @@ void menuChoise ( ){
             break;
         case 1:
             printf("Nemesis action\n");
-            aux2= 1;
+            hora += 50.0;
+            aux2 = 1;
+            gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
             break;
         case 3:
             printf("Iniciar Movimiento \n" );
+            textOFF = 1;
             hora += 50.0;
             gluLookAt(der, arr, z, 0.0, 0.0, 0.0, 0, 1, 0);
             break;
@@ -762,13 +893,20 @@ void menuChoise ( ){
             printf ( "NEPTUNO(x,y,z) = (%F, %F, %F)\n", neptunoXYZ[0], neptunoXYZ[1], neptunoXYZ[2]);
             break;
         case 15:
-            printf("Acerca de\n");
+            printf("Nemesis\n");
+            walkFromTO ( der, z, posicionXnemesis, posicionZnemesis );
+            gluLookAt(der, 0.0, z, 0.0, 0.0, 0.0, 0, 1, 0);
+            hora += 50.0;
+            printf ( "NEMESIS(x,z) = (%F, %F)\n", posicionXnemesis, posicionXnemesis);
             break;
         case 16:
+            printf("Acerca de\n");
+            break;
+        case 17:
             printf("Fullscreen\n");
             glutFullScreen();
             break;
-        case 17:
+        case 18:
             printf("Salir\n");
             exit(1);
             break;
@@ -964,13 +1102,14 @@ void createMenu(void){
     glutAddMenuEntry("Saturno", 12);
     glutAddMenuEntry("Urano", 13);
     glutAddMenuEntry("Neptuno", 14);
+    glutAddMenuEntry("Nemesis", 15);
     menu_id = glutCreateMenu(menu);
     glutAddMenuEntry("Go Nemesis!", 1);
     glutAddSubMenu("Sistema Solar", solarSytem_submenu_id);
     glutAddSubMenu("Ir a", planets_submenu_id);
-    glutAddMenuEntry("Acerca de", 15);
-    glutAddMenuEntry("FullScreen", 16);
-    glutAddMenuEntry("Salir", 17);
+    glutAddMenuEntry("Acerca de", 16);
+    glutAddMenuEntry("FullScreen", 17);
+    glutAddMenuEntry("Salir", 18);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
 
@@ -1002,7 +1141,7 @@ void specialkeyevent( int key, int Xx, int Yy ) {
         case GLUT_KEY_RIGHT: der -= 1.05; break;
         // cambia el delta del angulo de rotación
         case GLUT_KEY_F1:    hora  = 0.0; break;
-        case GLUT_KEY_F2:    hora += 50.0; break;
+        case GLUT_KEY_F2:    hora += 50.0; textOFF=1; break;
         case GLUT_KEY_F3:    arr -= 0.05; break;
         case GLUT_KEY_F4:    arr += 0.05; break;
         case GLUT_KEY_F5:    arr = 0.00; break;

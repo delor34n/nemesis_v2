@@ -20,7 +20,7 @@
 \maketitle
 
 \begin{abstract}
-	En este trabajo se presenta el modelamiento del sistema solar con cinturón de asteroides y la enana roja 	Némesis. Se creó en un ambiente gráfico el cual sufrirá los cambios dependiendo de la elipse que se establezca para la enana roja. Otras implementaciones realizadas en este trabajo fueron la aplicación de texturas en el fondo de la escena utilizando la técnica de SkyBox, el posicionamiento de la ViewPort en el planeta que se requiera y la implementación de un menu para facilitar la utilización del programa. Fue implementado en OpenGL bajo sistema operativo GNU/Linux.
+	En este trabajo se presenta el modelamiento del sistema solar con cinturón de asteroides y la enana roja 	Némesis. Se creó en un ambiente gráfico el cual sufrirá los cambios dependiendo de la elipse que se establezca para la enana roja. Otras implementaciones realizadas en este trabajo fueron la aplicación de texturas en el fondo de la escena utilizando la técnica de SkyBox, el posicionamiento de la ViewPort en la orbita del planeta que se requiera y la implementación de un menu para facilitar la navegación entre las funcionalidades del programa. Fue implementado en OpenGL bajo sistema operativo GNU/Linux.
 \end{abstract}
 
 \begin{keywords}
@@ -31,9 +31,9 @@
 
 \section{Introducción}
 
-	La idea principal es llevar a cabo la simulación del Sistema Solar el cual incluye un cinturón de asteroides y la presencia de una enana roja. El sistema que simula el fenómeno espacial se activa presionando un botón, generando una onda expansiva que desplaza a los asteroides de su cinturón haciendo posible el impacto de estos en los distintos planetas del sistema solar.
+	La idea principal es llevar a cabo la simulación del Sistema Solar el cual incluye un cinturón de asteroides y la presencia de una enana roja. El sistema que simula el fenómeno espacial se activa presionando un botón, lo cual genera una onda expansiva que desplaza a los asteroides de su cinturón haciendo posible la colisión de estos con los distintos planetas del sistema solar.
 
-	Considerando que lo que se presenta en esta versión del informe es una modificación a lo que ya está implementado, resulta importante mencionar que, pese a que se puede pensar que resulta más rápido, fácil e intuitivo implementar los nuevos requerimientos, se tomó gran parte del tiempo para leer, comprender, analizar e interactuar con el programa, con el fin de poder acoplar los nuevos requerimientos y no arruinar el resto.
+	Considerando que lo que se presenta en esta versión del informe es una modificación a lo que ya está implementado, resulta importante mencionar que, pese a que se puede pensar que resulta más rápido, fácil e intuitivo implementar los nuevos requerimientos, se tomó gran parte del tiempo para leer, comprender, analizar e interactuar con el programa, con el fin de poder acoplar los nuevos requerimientos y no estropear el resto.
 
 \subsection{Objetivo General}
 	Generar gráficamente el modelamiento del fenómeno espacial y que se aprecie lo más realista posible. 
@@ -51,25 +51,51 @@
 	
 \section{Definición de la problemática}
 
-En el año 1984, surge una hipótesis astronómica que sustenta de que nuestro Sol forme parte de un sistema binario. En este sistema, la estrella compañera del sol se llamaría Némesis, que cada 26 millones de años, desestabiliza la nube de Oort, la cual posee gran cantidad de cometas y estrellas (1). Esta desestabilización generaría que los cometas que se encuentran en la nube se dirijan hacia el sistema solar, causando gran cantidad de colisiones en los planetas.
+En el año 1984, surge una hipótesis astronómica que sustenta de que nuestro Sol forme parte de un sistema binario \cite{RAMuller}. En este sistema, la estrella compañera del sol se llamaría Némesis y cada 26 millones de años desestabiliza la nube de Oort, la cual posee gran cantidad de cometas y estrellas \cite{astronomia}. Esta desestabilización generaría que los cometas que se encuentran en la nube se dirijan hacia el sistema solar causando gran cantidad de colisiones en los planetas.
 
 \subsection{Problemática}
+Algunas de las problemáticas de nuestro modelamiento son:\\
 
-Con la definición del problema realizado, la principal problemática de nuestro modelamiento es calcular la trayectoria de los asteroides encontrados en la nube de Oort que impactarán con los planetas, y con qué planetas efectivamente harán colisión. También existe la problemática de realizar la nube de Oort y el mecanismo que utilizaremos en la programación para lograr una correcta representación de ésta. 
+\begin{enumerate}
+	\item Calcular la trayectoria de los asteroides encontrados en la nube de Oort que impactarán con los planetas.
+	\item Encontrar los planetas con los cuales efectivamente harán colisión.
+	\item Correcta implementación de la nube de Oort, buscando la mejor representación utilizando OpenGL.
+	\item Implementar un menú que permita navegar entre las distintas funcionalidades presentes en el programa.
+	\item Aplicar la técnica de SkyBox en la escena.
+	\item Realizar la traslación de la ViewPort hacía el planeta deseado utilizando el menú.
+\end{enumerate}
 
 \section{Modelo matemático}
 
 \subsection{Ecuación de la elipse}
 
+\begin{figure}[h!]
+	\includegraphics[width=0.25\textwidth, height=0.25\textwidth]{elipse.png}
+	\centering
+	\caption{Elipse}
+\end{figure}
+
+\newpage
+
+\[ \scalebox{2}{$\frac{x^{2}}{a^{2}} + \frac{y^{2}}{b^{2}}$} \]\\
+
+Donde $a>0$ y $b>0$, son las coordenadas de las abscisas. La elipse se encuentra centrada en el origen ($h,k=0$) \cite{enciclopedia}. La ecuación de la elipse modela la ubicación de la nube de Oort y la órbita de los planetas. Además, la trayectoria de la enana roja Némesis.\\
+
+\[ \scalebox{2}{$ \frac{x\cdot(x-x_{0})}{a^{2}} + \frac{y\cdot(y-y_{0})}{b^{2}}$} \]\\
+
+Luego, con la ecuación de la tangente a una elipse, se obtiene la dirección a la cual serán lanzadas las estrellas de la nube de Oort, y se observar las colisiones con los planetas del sistema solar.
+
 \section{Aproximación utilizada en las simulaciones gráficas}
 
-La formulación del modelo en base al sistema solar y a la teoría de la enana roja respecto al diagrama de Hertzsprung-Russell (3), esto es un modelo debido a que los cálculos realizados son a escala respecto al sistema solar real, es decir, X pixeles son equivalentes a algunos años luz. Los tamaños de los planetas también son a escala y la formulación de las estrellas son pixeles arbitrarios dentro de un rango (cinturón de asteroides).
+La formulación del modelo en base al sistema solar y a la teoría de la enana roja respecto al diagrama de Hertzsprung-Russell \cite{russel}, esto es un modelo debido a que los cálculos realizados son a escala respecto al sistema solar real, es decir, X pixeles son equivalentes a algunos años luz. Los tamaños de los planetas también son a escala y la formulación de las estrellas son pixeles arbitrarios dentro de un rango (cinturón de asteroides).
 
 \section{Implementación computacional}
 
-OpenGl es el principal entorno de desarrollo, para la creación de aplicaciones graficas portátiles e interactivas en  2D y 3D. Desde su introducción en 1992, OpenGl se ha convertido en la Interfaz de Programación de Aplicaciones (API) graficas más usada por la industria, brindando miles de aplicaciones a una gran variedad de plataformas de computación. A su vez, OpenGL fomenta la innovación y velocidad del desarrollo de aplicaciones incorporando una alta variedad de formas de rendering, mapeo de texturas, efectos especiales y otras poderosas funciones de visualización  (4).
+OpenGl es el principal entorno de desarrollo, para la creación de aplicaciones graficas portátiles e interactivas en  2D y 3D. Desde su introducción en 1992, OpenGl se ha convertido en la Interfaz de Programación de Aplicaciones (API) graficas más usada por la industria, brindando miles de aplicaciones a una gran variedad de plataformas de computación. A su vez, OpenGL fomenta la innovación y velocidad del desarrollo de aplicaciones incorporando una alta variedad de formas de rendering, mapeo de texturas, efectos especiales y otras poderosas funciones de visualización \cite{opengl}.\\
 
-Se utilizo el Entorno de Desarrollo Integrado (IDE) llamado Eclipse con el cual es más fácil programar ya que facilita la búsqueda de errores, y mejora la velocidad de compilación. En si, no se utilizan las muchas herramientas como los frameworks que Eclipse facilita, ya que no son aplicables a OpenGL, pero mejora mucho la eficiencia en cuanto a velocidad de trabajo al poder compilar con un solo click.
+Se utilizo el Entorno de Desarrollo Integrado (IDE) llamado NetBeans, el cual permite detectar rápidamente errores de sintáxis. Permite también iniciar en modo debug, herramienta con la cual es posible realizar un seguimiento del valor de cada variable en cada frame de la aplicación. Además, resulta mucho más fácil el proceso de compilación. La instalación y posterior configuración del proyecto se escapan del ámbito de este informe pero se puede encontrar información respecto a esto en nuestra Wiki del proyecto en GitHub \cite{wiki}.\\
+
+Finalmente, pese a que existe una gran variedad de librerías diferentes a OpenGL, no se utilizaron pues la idea principal de este proyecto es aprender a utilizar al más bajo nivel posible cada uno de los elementos presentes en la computación gráfica (Transformaciones geométricas, primitivas, etc...), cosa que es posible directamente con OpenGL y no con librerías externas que agregan una capa de abstracción en la programación y, por lo tanto, un menor nivel de entendimiento de lo que se realiza. Además, la mayoría de dichas librerías sólo están disponibles para C++.
 
 \section{Análisis de resultados}
 
@@ -91,9 +117,7 @@ En la figura 1 se puede apreciar la estrella Némesis (situada en la esquina inf
 
 \section{Conclusiones}
 
-La realización de este modelamiento fue costosa y ardua, ya que no había conocimiento de cómo plantearnos el problema, tal vez bosquejos o ideas que cualquier persona podría tener, pero no como analistas. Luego de algunas clases y laboratorios empezamos a entender lo que nos pedían y como poder realizar el modelamiento. Después de mucha investigación, comprensión de códigos antiguos, adquisición de conocimientos sobre el lenguaje de programación utilizado y el trabajo de unas funciones, se pudo llevar a cabo el modelamiento final. Nos sentimos orgullosos de haber sido capaces de realizar un buen modelamiento de un fenómeno natural tan sorprendente. De aquí en adelante esperamos que este trabajo pueda ser reutilizado como base para proyectos mas grandes por alumnos que tendrán este ramo más adelante o bien ser capaz de optimizarlo y lograr difundirlo para algún uso particular de buena manera. \cite{jj2} \cite{astronomia}
-
-\section{Referencias}
+La realización de este modelamiento fue costosa y ardua, ya que no había conocimiento de cómo plantearnos el problema, tal vez bosquejos o ideas que cualquier persona podría tener, pero no como analistas. Luego de algunas clases y laboratorios empezamos a entender lo que nos pedían y como poder realizar el modelamiento. Después de mucha investigación, comprensión de códigos antiguos, adquisición de conocimientos sobre el lenguaje de programación utilizado y el trabajo de unas funciones, se pudo llevar a cabo el modelamiento final. Nos sentimos orgullosos de haber sido capaces de realizar un buen modelamiento de un fenómeno natural tan sorprendente. De aquí en adelante esperamos que este trabajo pueda ser reutilizado como base para proyectos mas grandes por alumnos que tendrán este ramo más adelante o bien ser capaz de optimizarlo y lograr difundirlo para algún uso particular de buena manera.
 
 \bibliographystyle{IEEEtran}
 \bibliography{bibi}

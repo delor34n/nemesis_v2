@@ -21,16 +21,39 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{jj2}
-A.~Junghanns and J.~Schaeffer, ``Sokoban: Enhancing general single-agent search
-  methods using domain knowledge,'' \emph{Artificial Intelligence}, vol. 129,
-  pp. 219--251, 2001.
+\bibitem{RAMuller}
+R.~Muller, ``Evidence for a solar companion star,'' \emph{Nature}, vol. 308,
+  pp. 715--117, 1984.
 
 \bibitem{astronomia}
 \BIBentryALTinterwordspacing
-Astromia.com. (Diciembre 1, 2009.) Astronomía educativa: Tierra, sistema solar
-  y universo. [Online]. Available:
+Astromia.com. (Diciembre 15, 2014.) Astronomía educativa: Tierra, sistema
+  solar y universo. [Online]. Available:
   \url{http://www.astromia.com/solar/nubeoort.htm}
+\BIBentrySTDinterwordspacing
+
+\bibitem{enciclopedia}
+\BIBentryALTinterwordspacing
+Enciclopedia. (Diciembre 1, 2009.) Enciclopedia. [Online]. Available:
+  \url{http://enciclopedia.us.es/index.php/Elipse}
+\BIBentrySTDinterwordspacing
+
+\bibitem{russel}
+\BIBentryALTinterwordspacing
+A.~O.~T. Universe. (Diciembre 15, 2014.) Atlas of the universe. [Online].
+  Available: \url{http://www.atlasoftheuniverse.com/espanol/hr.html}
+\BIBentrySTDinterwordspacing
+
+\bibitem{opengl}
+\BIBentryALTinterwordspacing
+OpenGL. (Diciembre 15, 2014.) Opengl overview. [Online]. Available:
+  \url{https://www.opengl.org/about/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{wiki}
+\BIBentryALTinterwordspacing
+S.~L. Mena. (Diciembre 15, 2014.) Github wiki. [Online]. Available:
+  \url{https://www.github.com/delor34n/nemesis\_v2/wiki}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}

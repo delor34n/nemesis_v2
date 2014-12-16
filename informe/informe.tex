@@ -220,6 +220,8 @@ OpenGl es el principal entorno de desarrollo, para la creación de aplicaciones 
 
 Se utilizo el Entorno de Desarrollo Integrado (IDE) llamado NetBeans, el cual permite detectar rápidamente errores de sintáxis. Permite también iniciar en modo debug, herramienta con la cual es posible realizar un seguimiento del valor de cada variable en cada frame de la aplicación. Además, resulta mucho más fácil el proceso de compilación. La instalación y posterior configuración del proyecto se escapan del ámbito de este informe pero se puede encontrar información respecto a esto en nuestra Wiki del proyecto en GitHub\footnote{Más información en: \url{https://www.github.com/delor34n/nemesis_v2/wiki}}.\\
 
+Como complemento a lo anterior, se utilizó Git para llevar un control exhaustivo de las versiones del código del programa. Además de esto, se hizo uso de los repositorios gratuitos en línea de GitHub\footnote{Proyecto disponible en: "\url{https://www.github.com/delor34n/nemesis_v2}"}, para poder trabajar remotamente, facilitar la integración de los avances de cada integrante del equipo y también para proteger los avances si es que algún computador de alguno de los miembros del equipo falla.\\
+
 Por otro lado, pese a que existe una gran variedad de librerías diferentes a OpenGL, no se utilizaron pues la idea principal de este proyecto es aprender a utilizar al más bajo nivel posible cada uno de los elementos presentes en la computación gráfica (Transformaciones geométricas, primitivas, etc...), cosa que es posible directamente con OpenGL y no con librerías externas que agregan una capa de abstracción en la programación y, por lo tanto, un menor nivel de entendimiento de lo que se realiza. Además, la mayoría de dichas librerías sólo están disponibles para C++.\\
 
 OpenGL trabaja con una pila de matrices, las cuales representan cada objeto que se muestra en la escena. La forma en la que se trabajan dichas matrices es la siguiente:\\
@@ -321,7 +323,17 @@ Donde $dia$ es una variable que aumenta en una unidad en cada frame. La operaci�
 
 \subsection{loadSkyBox}
 
+Antiguamente, la mayoría de los video juegos utilizaban esta técnica, ejemplo de esto es Doom II. La escena de dicho juego se sitúa en el interior de un cubo gigante, dando la impresión de que Keen (Personaje que maneja el usuario) se encuentra en la tierra:
+
+\begin{figure}[h!]
+	\includegraphics[width=0.4\textwidth, height=0.25\textwidth]{doom2.jpg}
+	\centering
+	\caption{Doom II: Hell on Earth.}
+\end{figure}
+
 La idea detrás de la técnica Skybox, es renderizar un cubo gigante con una textura particular, posicionando la escena y la viewport en el centro\cite{skybox2}.\\
+
+Existen dos tipos de Skybox: basado en texturas (mapeo de la textura en un cubo) y otro basado en geometría (Situar la viewport en un punto inaccesible al usuario y desde allí proyectar el fondo). Para efectos de este proyecto se utilizará el primero.
 
 Como se decía anteriormente, se aplica un tipo especial de textura en el cubo. Esta textura se crea de forma que cada cara del cubo posea la textura que le corresponde y que al interior del cubo las esquinas estén perfectamente alineadas, para crear la sensación de una textura continua. La textura que se aplicó es la siguiente:
 
@@ -359,7 +371,6 @@ A continuación una imágen del menú:
 	\centering
 	\caption{Menu.}
 \end{figure}
-
 
 \section{Análisis de resultados}
 

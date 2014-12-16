@@ -1141,7 +1141,7 @@ void specialkeyevent( int key, int Xx, int Yy ) {
         case GLUT_KEY_RIGHT: der -= 1.05; break;
         // cambia el delta del angulo de rotación
         case GLUT_KEY_F1:    hora  = 0.0; break;
-        case GLUT_KEY_F2:    hora += 50.0; textOFF=1 break;
+        case GLUT_KEY_F2:    hora += 50.0; textOFF=1; break;
         case GLUT_KEY_F3:    arr -= 0.05; break;
         case GLUT_KEY_F4:    arr += 0.05; break;
         case GLUT_KEY_F5:    arr = 0.00; break;
@@ -1196,7 +1196,7 @@ int main(int argc, char** argv) {
 
     //derr = x; arr = y; z = z
     der  = -5;
-    arr  = 0;
+    arr  = 5;
     z    = -35;
     
     //Variable para controlar el menú.

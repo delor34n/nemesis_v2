@@ -1,4 +1,5 @@
 \documentclass[journal]{IEEEtran}
+\usepackage{url}
 \usepackage[utf8]{inputenc}
 \ifCLASSINFOpdf
 \else
@@ -31,9 +32,9 @@
 
 \section{Introducción}
 
-	La idea principal es llevar a cabo la simulación del Sistema Solar el cual incluye un cinturón de asteroides y la presencia de una enana roja. El sistema que simula el fenómeno espacial se activa presionando un botón, lo cual genera una onda expansiva que desplaza a los asteroides de su cinturón haciendo posible la colisión de estos con los distintos planetas del sistema solar.
+	La idea principal es llevar a cabo la simulación del Sistema Solar el cual incluye un cinturón de asteroides y la presencia de una enana roja. El sistema que simula el fenómeno espacial se activa presionando un botón, lo cual genera una onda expansiva que desplaza a los asteroides de su cinturón haciendo posible la colisión de estos con los distintos planetas del sistema solar.\\
 
-	Considerando que lo que se presenta en esta versión del informe es una modificación a lo que ya está implementado, resulta importante mencionar que, pese a que se puede pensar que resulta más rápido, fácil e intuitivo implementar los nuevos requerimientos, se tomó gran parte del tiempo para leer, comprender, analizar e interactuar con el programa, con el fin de poder acoplar los nuevos requerimientos y no estropear el resto.
+	Considerando que lo que se presenta en esta versión del informe es una modificación a lo que ya está implementado, resulta importante mencionar que, pese a que se puede pensar que resulta más rápido, fácil e intuitivo implementar los nuevos requerimientos, se tomó gran parte del tiempo para leer, comprender, analizar e interactuar con el programa, con el fin de poder acoplar los nuevos requerimientos y no estropear el resto. Se agregan dos nuevas funcionalidades: la opción de acercarse a las órbitas de los planetas y al llegar a ella comenzar a orbitar en ella, a una velocidad controlada por el usuario. Por otro lado y como se había mencionado anteriormente se aplicó la técnica de SkyBox aplicando una textura de estrellas al fondo de la escena.
 
 \subsection{Objetivo General}
 	Generar gráficamente el modelamiento del fenómeno espacial y que se aprecie lo más realista posible. 
@@ -51,10 +52,14 @@
 	
 \section{Definición de la problemática}
 
-En el año 1984, surge una hipótesis astronómica que sustenta de que nuestro Sol forme parte de un sistema binario \cite{RAMuller}. En este sistema, la estrella compañera del sol se llamaría Némesis y cada 26 millones de años desestabiliza la nube de Oort, la cual posee gran cantidad de cometas y estrellas \cite{astronomia}. Esta desestabilización generaría que los cometas que se encuentran en la nube se dirijan hacia el sistema solar causando gran cantidad de colisiones en los planetas.
+En el año 1984, surge una hipótesis astronómica que sustenta de que nuestro Sol forme parte de un sistema binario \cite{RAMuller}. En este sistema, la estrella compañera del sol se llamaría Némesis y cada 26 millones de años desestabiliza la nube de Oort, la cual posee gran cantidad de cometas y estrellas \cite{astronomia}. Esta desestabilización generaría que los cometas que se encuentran en la nube se dirijan hacia el sistema solar causando gran cantidad de colisiones en los planetas. \\
+
+Skybox es una tecnica que permita que una escena se vea más grande y más impresionante, envolviendo al espectador (usuario) con una textura que es posible apreciar en una cámara de 360$^{\circ}$\cite{skybox}. Dicha técnica utiliza imágenes con baja calidad ya que la cantidad de datos que se procesa en cada frame es mucha y si se necesitara una imagen de mayor calidad y/o resolución, es necesaria una tarjeta con procesamiento gráfico independiente para una mejor representación (Además de una optimización en cómo se aplica la textura).\\
+
+Finalmente, resulta necesario trabajar con las transformaciones geométricas correctas que permitan posicionar la viewport en un planeta específico, realizando una trayectoría animada desde un punto $(x_{0}, y_{0}, z_{0})$ hacía un punto $(x_{1}, y_{1}, z_{1})$, considerando que estos orbitan en torno al punto $(0,0,0)$ y sus posiciones varían constantemente.
 
 \subsection{Problemática}
-Algunas de las problemáticas de nuestro modelamiento son:\\
+Realizando un desgloce final de las problemáticas de nuestro proyecto, se tiene:\\
 
 \begin{enumerate}
 	\item Calcular la trayectoria de los asteroides encontrados en la nube de Oort que impactarán con los planetas.
@@ -75,15 +80,101 @@ Algunas de las problemáticas de nuestro modelamiento son:\\
 	\caption{Elipse}
 \end{figure}
 
-\newpage
-
 \[ \scalebox{2}{$\frac{x^{2}}{a^{2}} + \frac{y^{2}}{b^{2}}$} \]\\
 
-Donde $a>0$ y $b>0$, son las coordenadas de las abscisas. La elipse se encuentra centrada en el origen ($h,k=0$) \cite{enciclopedia}. La ecuación de la elipse modela la ubicación de la nube de Oort y la órbita de los planetas. Además, la trayectoria de la enana roja Némesis.\\
+Donde $a>0$ y $b>0$, las coordenadas de las abscisas. La elipse se encuentra centrada en el origen ($h,k=0$) \cite{enciclopedia}. La ecuación de la elipse modela la ubicación de la nube de Oort y la órbita de los planetas, y la trayectoria de la enana roja Némesis.\\
 
 \[ \scalebox{2}{$ \frac{x\cdot(x-x_{0})}{a^{2}} + \frac{y\cdot(y-y_{0})}{b^{2}}$} \]\\
 
-Luego, con la ecuación de la tangente a una elipse, se obtiene la dirección a la cual serán lanzadas las estrellas de la nube de Oort, y se observar las colisiones con los planetas del sistema solar.
+Luego con la ecuación de la recta tangente a una elipse, se obtiene la dirección a la cual serán lanzadas las estrellas de la nube de Oort, y se observarán las colisiones con los planetas del sistema solar.
+
+\subsection{Matriz de Rotación}
+
+Las rotaciones en dos dimensiones está determinado por la siguiente matriz \cite{foley}:\\
+\[ 
+	\left[ 
+		\begin{array}{cc}
+			\cos\theta & -\sin\theta \\
+			\sin\theta & \cos\theta
+		\end{array}
+	\right]
+\]
+
+Teniendo esto, es posible generalizar dicha matriz y utilizarla para 3 dimensiones. La diferencia fundamental  radica en que la transformación geométrica de rotación es posible aplicarla sobre $(x,y,z)$, es decir, es posible aplicar la rotación con un ángulo $\theta$ sobre un eje específico. A continuación se presenta cada una de las matrices, indicando sobre qué eje se efectuará la rotación en $\theta$ grados:
+
+Rotación sobre el eje x:\\
+\[
+	R_{xy}(\theta) = \left[ 
+		\begin{array}{cccc}
+			1 & 0 & 0 & 0 \\
+			0 & \cos\theta & -\sin\theta & 0 \\
+			0 & \sin\theta & \cos\theta & 0 \\
+			0 & 0 & 0 & 1
+		\end{array}
+	\right]
+\]
+Rotación sobre el eje y:\\
+\[
+	R_{yz}(\theta) = \left[ 
+		\begin{array}{cccc}
+			\cos\theta & 0 & \sin\theta & 0 \\
+			0 & 1 & 0 & 0 \\
+			-\sin\theta & 0 & \cos\theta & 0 \\
+			0 & 0 & 0 & 1
+		\end{array}
+	\right]	
+\]
+Rotación sobre el eje z:\\
+\[
+	R_{zx}(\theta) = \left[ 
+		\begin{array}{cccc}
+			\cos\theta & -\sin\theta & 0 & 0 \\
+			\sin\theta & \cos\theta & 0 & 0 \\
+			0 & 0 & 1 & 0 \\
+			0 & 0 & 0 & 1
+		\end{array}
+	\right]	
+\]
+
+Se describe como rotación en los planos $xy$, $yz$ y $zx$, pues resulta más fácil asociar la rotación en 3 dimensiones de esa forma. Por ejemplo, al realizar una rotación $yz$ con $\theta$ grados, el objeto realiza un giro en torno al eje y, pero en el sentido del eje z. Es posible apreciar esto gráficamente con la siguiente imagen:
+
+\begin{figure}[h!]
+	\includegraphics[height=0.15\textwidth]{rotation.png}
+	\centering
+	\caption{Rotación sobre cada eje.}
+\end{figure}
+
+La órbita de los planetas se genera aplicando una rotación sobre el eje $y$ (En el origen, teniendo el solo como referencia) con un ángulo $0^{\circ}\leq\theta\leq360^{\circ}$, el cual aumenta en cada frame de la escena.
+
+\subsection{Matriz de Traslación}
+
+La matriz que describe la traslación de los objetos en la escena es la siguiente:\\
+
+\[ 
+	T = \left[ 
+			\begin{array}{cccc}
+				1 & 0 & 0 & T_{x} \\
+				0 & 1 & 0 & T_{y} \\
+				0 & 0 & 1 & T_{z} \\
+				0 & 0 & 0 & 1 
+			\end{array}
+		\right] \times 
+		\left[ 
+			\begin{array}{c}
+				v_{x} \\
+				v_{y} \\
+				v_{z} \\
+				v_{w} 
+			\end{array}
+		\right] = 
+		\left(
+			\begin{array}{ccc}
+				v'_{x} , & v'_{y} , & v'_{z}
+			\end{array}
+		\right)
+\]
+
+Antes de realizar la rotación de los planetas es necesario posicionarlos en la escena. La traslación de los planetas permite determinar el radio que tendrá la órbita del planeta respecto al sol. Es en torno a esta transformación que se aplica la rotación, por ejemplo, en el primer frame se sitúa el objeto en la posición $(x_{0}, y_{0}, z_{0})$ y se realiza una rotación en $\theta_{0}$ grados en torno al eje $y$, provocando que el objeto se sitúe en la posición $(x_{1}, y_{1}, z_{1})$. Es decir, se aplica un incremento $\Delta$ de la rotación del objeto respecto a su posición original, en cada frame de la escena.
 
 \section{Aproximación utilizada en las simulaciones gráficas}
 
@@ -93,9 +184,13 @@ La formulación del modelo en base al sistema solar y a la teoría de la enana r
 
 OpenGl es el principal entorno de desarrollo, para la creación de aplicaciones graficas portátiles e interactivas en  2D y 3D. Desde su introducción en 1992, OpenGl se ha convertido en la Interfaz de Programación de Aplicaciones (API) graficas más usada por la industria, brindando miles de aplicaciones a una gran variedad de plataformas de computación. A su vez, OpenGL fomenta la innovación y velocidad del desarrollo de aplicaciones incorporando una alta variedad de formas de rendering, mapeo de texturas, efectos especiales y otras poderosas funciones de visualización \cite{opengl}.\\
 
-Se utilizo el Entorno de Desarrollo Integrado (IDE) llamado NetBeans, el cual permite detectar rápidamente errores de sintáxis. Permite también iniciar en modo debug, herramienta con la cual es posible realizar un seguimiento del valor de cada variable en cada frame de la aplicación. Además, resulta mucho más fácil el proceso de compilación. La instalación y posterior configuración del proyecto se escapan del ámbito de este informe pero se puede encontrar información respecto a esto en nuestra Wiki del proyecto en GitHub \cite{wiki}.\\
+Se utilizo el Entorno de Desarrollo Integrado (IDE) llamado NetBeans, el cual permite detectar rápidamente errores de sintáxis. Permite también iniciar en modo debug, herramienta con la cual es posible realizar un seguimiento del valor de cada variable en cada frame de la aplicación. Además, resulta mucho más fácil el proceso de compilación. La instalación y posterior configuración del proyecto se escapan del ámbito de este informe pero se puede encontrar información respecto a esto en nuestra Wiki del proyecto en GitHub\footnote{Más información en: \url{https://www.github.com/delor34n/nemesis_v2/wiki}}.\\
 
-Finalmente, pese a que existe una gran variedad de librerías diferentes a OpenGL, no se utilizaron pues la idea principal de este proyecto es aprender a utilizar al más bajo nivel posible cada uno de los elementos presentes en la computación gráfica (Transformaciones geométricas, primitivas, etc...), cosa que es posible directamente con OpenGL y no con librerías externas que agregan una capa de abstracción en la programación y, por lo tanto, un menor nivel de entendimiento de lo que se realiza. Además, la mayoría de dichas librerías sólo están disponibles para C++.
+Por otro lado, pese a que existe una gran variedad de librerías diferentes a OpenGL, no se utilizaron pues la idea principal de este proyecto es aprender a utilizar al más bajo nivel posible cada uno de los elementos presentes en la computación gráfica (Transformaciones geométricas, primitivas, etc...), cosa que es posible directamente con OpenGL y no con librerías externas que agregan una capa de abstracción en la programación y, por lo tanto, un menor nivel de entendimiento de lo que se realiza. Además, la mayoría de dichas librerías sólo están disponibles para C++.
+
+Las transformaciones geométricas en OpenGL están determinadas por las siguientes funciones:
+
+
 
 \section{Análisis de resultados}
 

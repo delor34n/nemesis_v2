@@ -32,11 +32,19 @@ Astromia.com. (Diciembre 15, 2014.) Astronomía educativa: Tierra, sistema
   \url{http://www.astromia.com/solar/nubeoort.htm}
 \BIBentrySTDinterwordspacing
 
+\bibitem{skybox}
+J.~YANG. (Diciembre 15, 2014.) Treasure hunting.
+  \url{http://www.cs.ucla.edu/~jdyang/CS274C_project_report.pdf}.
+
 \bibitem{enciclopedia}
 \BIBentryALTinterwordspacing
 Enciclopedia. (Diciembre 1, 2009.) Enciclopedia. [Online]. Available:
   \url{http://enciclopedia.us.es/index.php/Elipse}
 \BIBentrySTDinterwordspacing
+
+\bibitem{foley}
+J.~Foley, \emph{Computer graphics : principles and practice}.\hskip 1em plus
+  0.5em minus 0.4em\relax Reading, Mass: Addison-Wesley, 1995.
 
 \bibitem{russel}
 \BIBentryALTinterwordspacing
@@ -48,12 +56,6 @@ A.~O.~T. Universe. (Diciembre 15, 2014.) Atlas of the universe. [Online].
 \BIBentryALTinterwordspacing
 OpenGL. (Diciembre 15, 2014.) Opengl overview. [Online]. Available:
   \url{https://www.opengl.org/about/}
-\BIBentrySTDinterwordspacing
-
-\bibitem{wiki}
-\BIBentryALTinterwordspacing
-S.~L. Mena. (Diciembre 15, 2014.) Github wiki. [Online]. Available:
-  \url{https://www.github.com/delor34n/nemesis\_v2/wiki}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}
